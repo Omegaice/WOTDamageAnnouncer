@@ -272,7 +272,7 @@ class Vehicle(BigWorld.Entity):
                 self.__ownHealth = newHealth
 
                 attacker = p.arena.vehicles.get(attackerID)
-                if p.team != attacker["team"]
+                if p.team != attacker["team"]:
                     MessengerEntry.g_instance.gui.addClientMessage(attacker["name"] + "(" + attacker["vehicleType"].type.userString + ") hit me for " + str(damage) + " damage")
                 else:
                     if not BattleReplay.g_replayCtrl.isPlaying and damage > 25:
