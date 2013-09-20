@@ -1,6 +1,7 @@
 {
 	"hit_message":{
-		"enabled": true
+		"enabled": true,
+		"color": "FFFFFF"
 	},
 	"team_announce":{
 		"enabled": true,
