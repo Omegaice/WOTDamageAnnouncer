@@ -283,10 +283,17 @@ class Vehicle(BigWorld.Entity):
                     attacker = p.arena.vehicles.get(attackerID)
                     if p.team != attacker["team"]:
                         if self.__damageCfg["hit_message"]["enabled"]  == True:
+                            # Setup Message
                             message = "<font color=\"#"+self.__damageCfg["hit_message"]["color"]+"\">"
-                            message += attacker["name"] + " (" + attacker["vehicleType"].type.userString + ") hit me for " + str(damage) + " damage"
+                            message += self.__damageCfg["hit_message"]["format"]
                             message += "</font>"
 
+                            # Replace values
+                            message = message.replace("{{user}}", attacker["name"])
+                            message = message.replace("{{tank_long}}", attacker["vehicleType"].type.userString)
+                            message = message.replace("{{damage}}", str(damage))
+
+                            # Send Message
                             MessengerEntry.g_instance.gui.addClientMessage(message)
                     else:
                         if self.__damageCfg["team_announce"]["enabled"] == True:

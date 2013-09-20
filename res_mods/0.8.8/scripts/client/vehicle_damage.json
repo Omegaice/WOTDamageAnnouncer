@@ -1,7 +1,8 @@
 {
 	"hit_message":{
 		"enabled": true,
-		"color": "FFFFFF"
+		"color": "FFFFFF",
+		"format": "Hit: {{user}} ({{tank_long}}) - {{damage}}"
 	},
 	"team_announce":{
 		"enabled": true,
