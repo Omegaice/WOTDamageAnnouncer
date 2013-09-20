@@ -19,6 +19,8 @@ import physics_shared
 import ArenaType
 import BattleReplay
 import TriggersManager
+import json
+import os
 from messenger import MessengerEntry
 from TriggersManager import TRIGGER_TYPE
 from ModelHitTester import segmentMayHitVehicle
@@ -29,6 +31,12 @@ from material_kinds import EFFECT_MATERIAL_INDEXES_BY_IDS, EFFECT_MATERIAL_INDEX
 class Vehicle(BigWorld.Entity):
     hornMode = property(lambda self: self.__hornMode)
     isEnteringWorld = property(lambda self: self.__isEnteringWorld)
+
+    __damageCfg = None
+    configuration_file = os.getcwd() + os.sep + 'res_mods' + os.sep + '0.8.8' + os.sep + 'scripts' + os.sep + 'client' + os.sep + 'vehicle_damage.json'
+    LOG_NOTE("Loading Damage Announce Configuration: ", configuration_file)
+    with open(configuration_file) as data_file:
+        __damageCfg = json.load(data_file)
 
     def __init__(self):
         self.proxy = weakref.proxy(self)
@@ -271,13 +279,16 @@ class Vehicle(BigWorld.Entity):
                 damage = self.__ownHealth - newHealth
                 self.__ownHealth = newHealth
 
-                attacker = p.arena.vehicles.get(attackerID)
-                if p.team != attacker["team"]:
-                    MessengerEntry.g_instance.gui.addClientMessage(attacker["name"] + "(" + attacker["vehicleType"].type.userString + ") hit me for " + str(damage) + " damage")
-                else:
-                    if not BattleReplay.g_replayCtrl.isPlaying and damage > 25:
-                        from ChatManager import chatManager
-                        BigWorld.player().broadcast(chatManager.battleTeamChannelID, attacker["name"] + "(" + attacker["vehicleType"].type.userString + ") team attacked me for " + str(damage) + " damage")
+                if self.__damageCfg is not None:
+                    attacker = p.arena.vehicles.get(attackerID)
+                    if p.team != attacker["team"]:
+                        if self.__damageCfg["hit_message"]["enabled"]  == True:
+                            MessengerEntry.g_instance.gui.addClientMessage(attacker["name"] + "(" + attacker["vehicleType"].type.userString + ") hit me for " + str(damage) + " damage")
+                    else:
+                        if self.__damageCfg["team_announce"]["enabled"] == True:
+                            if not BattleReplay.g_replayCtrl.isPlaying and damage > self.__damageCfg["team_announce"]["min_damage"]:
+                                from ChatManager import chatManager
+                                BigWorld.player().broadcast(chatManager.battleTeamChannelID, attacker["name"] + "(" + attacker["vehicleType"].type.userString + ") team attacked me for " + str(damage) + " damage")
 
             if not self.isPlayer:
                 marker = getattr(self, 'marker', None)

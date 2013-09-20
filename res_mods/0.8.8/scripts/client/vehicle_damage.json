@@ -1,0 +1,9 @@
+{
+	"hit_message":{
+		"enabled": true
+	},
+	"team_damage":{
+		"enabled": true,
+		"min_damage": 25
+	}
+}
