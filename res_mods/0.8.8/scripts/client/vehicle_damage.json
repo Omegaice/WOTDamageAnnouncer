@@ -2,7 +2,7 @@
 	"hit_message":{
 		"enabled": true
 	},
-	"team_damage":{
+	"team_announce":{
 		"enabled": true,
 		"min_damage": 25
 	}
