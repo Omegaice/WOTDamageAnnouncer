@@ -283,7 +283,7 @@ class Vehicle(BigWorld.Entity):
                     attacker = p.arena.vehicles.get(attackerID)
                     if p.team != attacker["team"]:
                         if self.__damageCfg["hit_message"]["enabled"]  == True:
-                            MessengerEntry.g_instance.gui.addClientMessage(attacker["name"] + " (" + attacker["vehicleType"].type.userString + ") hit me for " + str(damage) + " damage")
+                            MessengerEntry.g_instance.gui.addClientMessage("<font color=\"#FFFFFF\">" + attacker["name"] + " (" + attacker["vehicleType"].type.userString + ") hit me for " + str(damage) + " damage</font>")
                     else:
                         if self.__damageCfg["team_announce"]["enabled"] == True:
                             if not BattleReplay.g_replayCtrl.isPlaying and damage > self.__damageCfg["team_announce"]["min_damage"]:
