@@ -299,7 +299,15 @@ class Vehicle(BigWorld.Entity):
                         if self.__damageCfg["team_announce"]["enabled"] == True:
                             if not BattleReplay.g_replayCtrl.isPlaying and damage > self.__damageCfg["team_announce"]["min_damage"]:
                                 from ChatManager import chatManager
-                                BigWorld.player().broadcast(chatManager.battleTeamChannelID, attacker["name"] + " (" + attacker["vehicleType"].type.userString + ") team attacked me for " + str(damage) + " damage")
+
+                                message = self.__damageCfg["team_announce"]["format"]
+
+                                # Replace values
+                                message = message.replace("{{user}}", attacker["name"])
+                                message = message.replace("{{tank_long}}", attacker["vehicleType"].type.userString)
+                                message = message.replace("{{damage}}", str(damage))
+
+                                BigWorld.player().broadcast(chatManager.battleTeamChannelID, message)
 
             if not self.isPlayer:
                 marker = getattr(self, 'marker', None)
