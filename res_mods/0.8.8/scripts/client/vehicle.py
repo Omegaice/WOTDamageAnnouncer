@@ -299,8 +299,6 @@ class Vehicle(BigWorld.Entity):
                                     reload_time = attacker["vehicleType"].gun["reloadTime"]
                                     message = message.replace("{{reload}}", "{0:.2f}".format(reload_time) + "s")
 
-                                LOG_NOTE("Attacker:", attacker["vehicleType"].__dict__)
-
                                 # Send Message
                                 MessengerEntry.g_instance.gui.addClientMessage(message)
                         else:
@@ -318,7 +316,7 @@ class Vehicle(BigWorld.Entity):
 
                                     BigWorld.player().broadcast(chatManager.battleTeamChannelID, message)
                     except:
-                        LOG_NOTE("Exception occured with mod")
+                        LOG_NOTE("Exception occured with DamageAnnouncer")
 
             if not self.isPlayer:
                 marker = getattr(self, 'marker', None)
