@@ -280,34 +280,14 @@ class Vehicle(BigWorld.Entity):
                 self.__ownHealth = newHealth
 
                 if self.__damageCfg is not None:
-                    attacker = p.arena.vehicles.get(attackerID)
-                    if attacker is not None and p.team != attacker["team"]:
-                        if self.__damageCfg["hit_message"]["enabled"]  == True:
-                            # Setup Message
-                            message = "<font color=\"#"+self.__damageCfg["hit_message"]["color"]+"\">"
-                            message += self.__damageCfg["hit_message"]["format"]
-                            message += "</font>"
-
-                            # Replace values
-                            message = message.replace("{{user}}", attacker["name"])
-                            message = message.replace("{{tank_long}}", attacker["vehicleType"].type.userString)
-                            message = message.replace("{{tank_short}}", attacker["vehicleType"].type.shortUserString)
-                            message = message.replace("{{damage}}", str(damage))
-
-                            if message.find("{{reload}}") != -1:
-                                reload_time = attacker["vehicleType"].gun["reloadTime"]
-                                message = message.replace("{{reload}}", "{0:.2f}".format(reload_time) + "s")
-
-                            LOG_NOTE("Attacker:", attacker["vehicleType"].__dict__)
-
-                            # Send Message
-                            MessengerEntry.g_instance.gui.addClientMessage(message)
-                    else:
-                        if self.__damageCfg["team_announce"]["enabled"] == True:
-                            if not BattleReplay.g_replayCtrl.isPlaying and damage > self.__damageCfg["team_announce"]["min_damage"]:
-                                from ChatManager import chatManager
-
-                                message = self.__damageCfg["team_announce"]["format"]
+                    try:
+                        attacker = p.arena.vehicles.get(attackerID)
+                        if p.team != attacker["team"]:
+                            if self.__damageCfg["hit_message"]["enabled"]  == True and attackReasonID == 0:
+                                # Setup Message
+                                message = "<font color=\"#"+self.__damageCfg["hit_message"]["color"]+"\">"
+                                message += self.__damageCfg["hit_message"]["format"]
+                                message += "</font>"
 
                                 # Replace values
                                 message = message.replace("{{user}}", attacker["name"])
@@ -315,7 +295,30 @@ class Vehicle(BigWorld.Entity):
                                 message = message.replace("{{tank_short}}", attacker["vehicleType"].type.shortUserString)
                                 message = message.replace("{{damage}}", str(damage))
 
-                                BigWorld.player().broadcast(chatManager.battleTeamChannelID, message)
+                                if message.find("{{reload}}") != -1:
+                                    reload_time = attacker["vehicleType"].gun["reloadTime"]
+                                    message = message.replace("{{reload}}", "{0:.2f}".format(reload_time) + "s")
+
+                                LOG_NOTE("Attacker:", attacker["vehicleType"].__dict__)
+
+                                # Send Message
+                                MessengerEntry.g_instance.gui.addClientMessage(message)
+                        else:
+                            if self.__damageCfg["team_announce"]["enabled"] == True:
+                                if not BattleReplay.g_replayCtrl.isPlaying and damage > self.__damageCfg["team_announce"]["min_damage"]:
+                                    from ChatManager import chatManager
+
+                                    message = self.__damageCfg["team_announce"]["format"]
+
+                                    # Replace values
+                                    message = message.replace("{{user}}", attacker["name"])
+                                    message = message.replace("{{tank_long}}", attacker["vehicleType"].type.userString)
+                                    message = message.replace("{{tank_short}}", attacker["vehicleType"].type.shortUserString)
+                                    message = message.replace("{{damage}}", str(damage))
+
+                                    BigWorld.player().broadcast(chatManager.battleTeamChannelID, message)
+                    except:
+                        LOG_NOTE("Exception occured with mod")
 
             if not self.isPlayer:
                 marker = getattr(self, 'marker', None)
