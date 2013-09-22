@@ -291,6 +291,7 @@ class Vehicle(BigWorld.Entity):
                             # Replace values
                             message = message.replace("{{user}}", attacker["name"])
                             message = message.replace("{{tank_long}}", attacker["vehicleType"].type.userString)
+                            message = message.replace("{{tank_short}}", attacker["vehicleType"].type.shortUserString)
                             message = message.replace("{{damage}}", str(damage))
 
                             # Send Message
@@ -305,6 +306,7 @@ class Vehicle(BigWorld.Entity):
                                 # Replace values
                                 message = message.replace("{{user}}", attacker["name"])
                                 message = message.replace("{{tank_long}}", attacker["vehicleType"].type.userString)
+                                message = message.replace("{{tank_short}}", attacker["vehicleType"].type.shortUserString)
                                 message = message.replace("{{damage}}", str(damage))
 
                                 BigWorld.player().broadcast(chatManager.battleTeamChannelID, message)
