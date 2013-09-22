@@ -294,6 +294,12 @@ class Vehicle(BigWorld.Entity):
                             message = message.replace("{{tank_short}}", attacker["vehicleType"].type.shortUserString)
                             message = message.replace("{{damage}}", str(damage))
 
+                            if message.find("{{reload}}") != -1:
+                                reload_time = attacker["vehicleType"].gun["reloadTime"]
+                                message = message.replace("{{reload}}", "{0:.2f}".format(reload_time) + "s")
+
+                            LOG_NOTE("Attacker:", attacker["vehicleType"].__dict__)
+
                             # Send Message
                             MessengerEntry.g_instance.gui.addClientMessage(message)
                     else:

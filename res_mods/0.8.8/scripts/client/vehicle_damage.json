@@ -2,7 +2,7 @@
 	"hit_message":{
 		"enabled": true,
 		"color": "FFFFFF",
-		"format": "Damage Recieved: {{user}} ({{tank_long}}) - {{damage}}"
+		"format": "Damage Recieved: {{user}} ({{tank_long}}) - {{damage}} Reload: {{reload}}"
 	},
 	"team_announce":{
 		"enabled": true,
