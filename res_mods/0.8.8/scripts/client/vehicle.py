@@ -274,14 +274,14 @@ class Vehicle(BigWorld.Entity):
             return
         else:
             p = BigWorld.player()
-            if p.name == self.publicInfo.name:
+            if p is not None and p.name == self.publicInfo.name:
                 # Update Health
                 damage = self.__ownHealth - newHealth
                 self.__ownHealth = newHealth
 
                 if self.__damageCfg is not None:
                     attacker = p.arena.vehicles.get(attackerID)
-                    if p.team != attacker["team"]:
+                    if attacker is not None and p.team != attacker["team"]:
                         if self.__damageCfg["hit_message"]["enabled"]  == True:
                             # Setup Message
                             message = "<font color=\"#"+self.__damageCfg["hit_message"]["color"]+"\">"
