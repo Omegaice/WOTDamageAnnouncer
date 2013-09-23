@@ -459,7 +459,7 @@ class Vehicle(BigWorld.Entity):
         self.__startWGPhysics()
         if self.isPlayer:
             nationId = self.typeDescriptor.type.id[0]
-        SoundGroups.g_instance.soundModes.setCurrentNation(nations.NAMES[nationId])
+            SoundGroups.g_instance.soundModes.setCurrentNation(nations.NAMES[nationId])
 
     def stopVisual(self):
         assert self.isStarted
