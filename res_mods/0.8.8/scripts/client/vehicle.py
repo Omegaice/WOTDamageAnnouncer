@@ -457,7 +457,8 @@ class Vehicle(BigWorld.Entity):
         minimap = g_windowsManager.battleWindow.minimap
         minimap.notifyVehicleStart(self.id)
         self.__startWGPhysics()
-        nationId = self.isPlayer and self.typeDescriptor.type.id[0]
+        if self.isPlayer:
+            nationId = self.typeDescriptor.type.id[0]
         SoundGroups.g_instance.soundModes.setCurrentNation(nations.NAMES[nationId])
 
     def stopVisual(self):
