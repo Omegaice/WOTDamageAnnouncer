@@ -287,7 +287,11 @@ class Vehicle(BigWorld.Entity):
                         attacker = p.arena.vehicles.get(attackerID)
                         if p.team != attacker["team"]:
                             if self.__damageCfg["debug"] == True:
-                                LOG_NOTE("Hit:", attacker["vehicleType"])
+                                LOG_NOTE("Hit:", attacker["vehicleType"].__dict__)
+
+                                for item in attacker["vehicleType"].optionalDevices:
+                                    if item is not None:
+                                        LOG_NOTE("Equipment:", item.name)
 
                             if self.__damageCfg["hit_message"]["enabled"] == True and attackReasonID == 0:
                                 # Setup Message
@@ -321,8 +325,8 @@ class Vehicle(BigWorld.Entity):
                                     message = message.replace("{{damage}}", str(damage))
 
                                     BigWorld.player().broadcast(chatManager.battleTeamChannelID, message)
-                    except:
-                        LOG_NOTE("Exception occured with DamageAnnouncer")
+                    except Exception, err:
+                        LOG_NOTE("Damage Announcer Error: ", err)
 
             if not self.isPlayer:
                 marker = getattr(self, 'marker', None)
