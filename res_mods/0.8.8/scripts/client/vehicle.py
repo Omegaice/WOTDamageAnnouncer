@@ -33,10 +33,12 @@ class Vehicle(BigWorld.Entity):
     isEnteringWorld = property(lambda self: self.__isEnteringWorld)
 
     __damageCfg = None
-    configuration_file = os.getcwd() + os.sep + 'res_mods' + os.sep + '0.8.8' + os.sep + 'scripts' + os.sep + 'client' + os.sep + 'vehicle_damage.json'
-    LOG_NOTE("Loading Damage Announce Configuration: ", configuration_file)
-    with open(configuration_file) as data_file:
-        __damageCfg = json.load(data_file)
+    try:
+        configuration_file = os.getcwd() + os.sep + 'res_mods' + os.sep + '0.8.8' + os.sep + 'scripts' + os.sep + 'client' + os.sep + 'vehicle_damage.json'
+        with open(configuration_file) as data_file:
+            __damageCfg = json.load(data_file)
+    except:
+        pass
 
     def __init__(self):
         self.proxy = weakref.proxy(self)
@@ -52,6 +54,7 @@ class Vehicle(BigWorld.Entity):
         self.wgPhysics = None
         self.__isEnteringWorld = False
         self.__ownHealth = 0
+        self.__hasWarned = False
 
     def reload(self):
         wasStarted = self.isStarted
@@ -439,7 +442,9 @@ class Vehicle(BigWorld.Entity):
 
     def startVisual(self):
         assert not self.isStarted
+
         avatar = BigWorld.player()
+
         self.appearance.start(self, self.__prereqs)
         self.__prereqs = None
         self.appearance.changeEngineMode(self.engineMode)
@@ -463,6 +468,11 @@ class Vehicle(BigWorld.Entity):
         if self.isPlayer:
             nationId = self.typeDescriptor.type.id[0]
             SoundGroups.g_instance.soundModes.setCurrentNation(nations.NAMES[nationId])
+
+        if avatar.name == self.publicInfo.name:
+            if self.__damageCfg is None and self.__hasWarned == False:
+                self.__hasWarned = True
+                MessengerEntry.g_instance.gui.addClientMessage("<font color=\"#FF0000\">Damage Announcer configuration file missing.</font>")
 
     def stopVisual(self):
         assert self.isStarted
