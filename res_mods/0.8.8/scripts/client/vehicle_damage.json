@@ -1,4 +1,5 @@
 {
+	"debug": false,
 	"hit_message":{
 		"enabled": true,
 		"color": "FFFFFF",

@@ -283,7 +283,10 @@ class Vehicle(BigWorld.Entity):
                     try:
                         attacker = p.arena.vehicles.get(attackerID)
                         if p.team != attacker["team"]:
-                            if self.__damageCfg["hit_message"]["enabled"]  == True and attackReasonID == 0:
+                            if self.__damageCfg["debug"] == True:
+                                LOG_NOTE("Hit:", attacker["vehicleType"])
+
+                            if self.__damageCfg["hit_message"]["enabled"] == True and attackReasonID == 0:
                                 # Setup Message
                                 message = "<font color=\"#"+self.__damageCfg["hit_message"]["color"]+"\">"
                                 message += self.__damageCfg["hit_message"]["format"]
