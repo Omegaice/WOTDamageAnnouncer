@@ -301,7 +301,7 @@ class Vehicle(BigWorld.Entity):
 
                                 # Replace values
                                 message = message.replace("{{user}}", attacker["name"])
-                                message = message.replace("{{tier}}", attacker["name"].level)
+                                message = message.replace("{{tier}}", str(attacker["vehicleType"].level))
                                 message = message.replace("{{tank_long}}", attacker["vehicleType"].type.userString)
                                 message = message.replace("{{tank_short}}", attacker["vehicleType"].type.shortUserString)
                                 message = message.replace("{{damage}}", str(damage))
@@ -309,6 +309,14 @@ class Vehicle(BigWorld.Entity):
                                 if message.find("{{reload}}") != -1:
                                     reload_time = attacker["vehicleType"].gun["reloadTime"]
                                     message = message.replace("{{reload}}", "{0:.2f}".format(reload_time) + "s")
+
+                                if message.find("{{shell_type}}") != -1:
+                                    if attacker["vehicleType"].shot["shell"]["kind"] == "ARMOR_PIERCING":
+                                        message = message.replace("{{shell_type}}", "AP")
+                                    if attacker["vehicleType"].shot["shell"]["kind"] == "ARMOR_PIERCING_CR":
+                                        message = message.replace("{{shell_type}}", "APCR")
+                                    if attacker["vehicleType"].shot["shell"]["kind"] == "HIGH_EXPLOSIVE":
+                                        message = message.replace("{{shell_type}}", "HE")
 
                                 # Send Message
                                 MessengerEntry.g_instance.gui.addClientMessage(message)
@@ -321,7 +329,6 @@ class Vehicle(BigWorld.Entity):
 
                                     # Replace values
                                     message = message.replace("{{user}}", attacker["name"])
-                                    message = message.replace("{{tier}}", attacker["name"].level)
                                     message = message.replace("{{tank_long}}", attacker["vehicleType"].type.userString)
                                     message = message.replace("{{tank_short}}", attacker["vehicleType"].type.shortUserString)
                                     message = message.replace("{{damage}}", str(damage))
