@@ -301,6 +301,7 @@ class Vehicle(BigWorld.Entity):
 
                                 # Replace values
                                 message = message.replace("{{user}}", attacker["name"])
+                                message = message.replace("{{tier}}", attacker["name"].level)
                                 message = message.replace("{{tank_long}}", attacker["vehicleType"].type.userString)
                                 message = message.replace("{{tank_short}}", attacker["vehicleType"].type.shortUserString)
                                 message = message.replace("{{damage}}", str(damage))
@@ -320,6 +321,7 @@ class Vehicle(BigWorld.Entity):
 
                                     # Replace values
                                     message = message.replace("{{user}}", attacker["name"])
+                                    message = message.replace("{{tier}}", attacker["name"].level)
                                     message = message.replace("{{tank_long}}", attacker["vehicleType"].type.userString)
                                     message = message.replace("{{tank_short}}", attacker["vehicleType"].type.shortUserString)
                                     message = message.replace("{{damage}}", str(damage))
