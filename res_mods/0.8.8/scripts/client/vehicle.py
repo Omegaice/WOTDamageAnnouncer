@@ -308,6 +308,11 @@ class Vehicle(BigWorld.Entity):
 
                                 if message.find("{{reload}}") != -1:
                                     reload_time = attacker["vehicleType"].gun["reloadTime"]
+
+                                    for item in attacker["vehicleType"].optionalDevices:
+                                        if item is not None and "TankRammer" in item.name:
+                                            reload_time *= 0.9
+
                                     message = message.replace("{{reload}}", "{0:.2f}".format(reload_time) + "s")
 
                                 if message.find("{{shell_type}}") != -1:
