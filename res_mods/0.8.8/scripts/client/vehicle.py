@@ -322,6 +322,8 @@ class Vehicle(BigWorld.Entity):
                                         message = message.replace("{{shell_type}}", "APCR")
                                     if attacker["vehicleType"].shot["shell"]["kind"] == "HIGH_EXPLOSIVE":
                                         message = message.replace("{{shell_type}}", "HE")
+                                    if attacker["vehicleType"].shot["shell"]["kind"] == "HOLLOW_CHARGE":
+                                        message = message.replace("{{shell_type}}", "HEAT")
 
                                 # Send Message
                                 MessengerEntry.g_instance.gui.addClientMessage(message)
