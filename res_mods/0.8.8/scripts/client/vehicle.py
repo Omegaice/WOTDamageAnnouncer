@@ -295,9 +295,7 @@ class Vehicle(BigWorld.Entity):
 
                             if self.__damageCfg["hit_message"]["enabled"] == True and attackReasonID == 0:
                                 # Setup Message
-                                message = "<font color=\"#"+self.__damageCfg["hit_message"]["color"]+"\">"
-                                message += self.__damageCfg["hit_message"]["format"]
-                                message += "</font>"
+                                message = self.__damageCfg["hit_message"]["format"]
 
                                 # Replace values
                                 message = message.replace("{{user}}", attacker["name"])
@@ -314,6 +312,16 @@ class Vehicle(BigWorld.Entity):
                                             reload_time *= 0.9
 
                                     message = message.replace("{{reload}}", "{0:.2f}".format(reload_time) + "s")
+
+                                if message.find("{{c:shell}}") != -1:
+                                    if attacker["vehicleType"].shot["shell"]["kind"] == "ARMOR_PIERCING":
+                                        message = message.replace("{{c:shell}}", self.__damageCfg["color"]["shell"]["ap"])
+                                    if attacker["vehicleType"].shot["shell"]["kind"] == "ARMOR_PIERCING_CR":
+                                        message = message.replace("{{c:shell}}", self.__damageCfg["color"]["shell"]["apcr"])
+                                    if attacker["vehicleType"].shot["shell"]["kind"] == "HIGH_EXPLOSIVE":
+                                        message = message.replace("{{c:shell}}", self.__damageCfg["color"]["shell"]["he"])
+                                    if attacker["vehicleType"].shot["shell"]["kind"] == "HOLLOW_CHARGE":
+                                        message = message.replace("{{c:shell}}", self.__damageCfg["color"]["shell"]["heat"])
 
                                 if message.find("{{shell_type}}") != -1:
                                     if attacker["vehicleType"].shot["shell"]["kind"] == "ARMOR_PIERCING":

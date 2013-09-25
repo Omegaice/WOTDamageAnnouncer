@@ -1,9 +1,16 @@
 {
 	"debug": false,
+	"color":{
+		"shell":{
+			"ap": "FFFFFF",
+			"apcr": "FFFFFF",
+			"he": "FFFFFF",
+			"heat": "FFFFFF"
+		}
+	},
 	"hit_message":{
 		"enabled": true,
-		"color": "FFFFFF",
-		"format": "Damage Recieved: {{user}} ({{tank_long}}) - {{damage}} Reload: {{reload}}"
+		"format": "<font color='#FFFFFF'>~ <font color='#01DF3A'>{{user}}</font>(<font color='#01DFA5'>{{tank_short}}</font>) <font face='Webdings'><b>~</b></font>: <b><font color='#FF8000'>{{damage}}</font></b>(<font color='#{{c:shell}}'>{{shell_type}}</font>) <font face='Webdings'><b>q</b></font>: <b>{{reload}}</b></font>"
 	},
 	"team_announce":{
 		"enabled": true,
