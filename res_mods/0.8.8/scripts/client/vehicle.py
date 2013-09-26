@@ -328,7 +328,6 @@ class Vehicle(BigWorld.Entity):
                                     message = message.replace("{{tank_short}}", attacker["vehicleType"].type.shortUserString)
                                     message = message.replace("{{damage}}", str(damage))
 
-                                    # NEEDS TO BE STRING, NOT UNICODE
                                     BigWorld.player().broadcast(chatManager.battleTeamChannelID, message.encode('ascii', 'xmlcharrefreplace'))
                     except Exception, err:
                         LOG_NOTE("Damage Announcer Error: ", err)
