@@ -313,26 +313,6 @@ class Vehicle(BigWorld.Entity):
 
                                     message = message.replace("{{reload}}", "{0:.2f}".format(reload_time) + "s")
 
-                                if message.find("{{c:shell}}") != -1:
-                                    if attacker["vehicleType"].shot["shell"]["kind"] == "ARMOR_PIERCING":
-                                        message = message.replace("{{c:shell}}", self.__damageCfg["color"]["shell"]["ap"])
-                                    if attacker["vehicleType"].shot["shell"]["kind"] == "ARMOR_PIERCING_CR":
-                                        message = message.replace("{{c:shell}}", self.__damageCfg["color"]["shell"]["apcr"])
-                                    if attacker["vehicleType"].shot["shell"]["kind"] == "HIGH_EXPLOSIVE":
-                                        message = message.replace("{{c:shell}}", self.__damageCfg["color"]["shell"]["he"])
-                                    if attacker["vehicleType"].shot["shell"]["kind"] == "HOLLOW_CHARGE":
-                                        message = message.replace("{{c:shell}}", self.__damageCfg["color"]["shell"]["heat"])
-
-                                if message.find("{{shell_type}}") != -1:
-                                    if attacker["vehicleType"].shot["shell"]["kind"] == "ARMOR_PIERCING":
-                                        message = message.replace("{{shell_type}}", "AP")
-                                    if attacker["vehicleType"].shot["shell"]["kind"] == "ARMOR_PIERCING_CR":
-                                        message = message.replace("{{shell_type}}", "APCR")
-                                    if attacker["vehicleType"].shot["shell"]["kind"] == "HIGH_EXPLOSIVE":
-                                        message = message.replace("{{shell_type}}", "HE")
-                                    if attacker["vehicleType"].shot["shell"]["kind"] == "HOLLOW_CHARGE":
-                                        message = message.replace("{{shell_type}}", "HEAT")
-
                                 # Send Message
                                 MessengerEntry.g_instance.gui.addClientMessage(message)
                         else:
@@ -348,6 +328,7 @@ class Vehicle(BigWorld.Entity):
                                     message = message.replace("{{tank_short}}", attacker["vehicleType"].type.shortUserString)
                                     message = message.replace("{{damage}}", str(damage))
 
+                                    # NEEDS TO BE STRING, NOT UNICODE
                                     BigWorld.player().broadcast(chatManager.battleTeamChannelID, message)
                     except Exception, err:
                         LOG_NOTE("Damage Announcer Error: ", err)
