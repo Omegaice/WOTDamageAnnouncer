@@ -295,17 +295,17 @@ class Vehicle(BigWorld.Entity):
                     return message
 
                 p = BigWorld.player()
-                if p is not None and p.name == self.publicInfo.name:
-                    # Update Health
-                    damage = self.__ownHealth - newHealth
-                    self.__ownHealth = newHealth
+                if p is not None and self.__damageCfg is not None:
+                    attacker = p.arena.vehicles.get(attackerID)
+                    if self.__damageCfg["debug"] == True:
+                        LOG_NOTE("Hit:", attacker["vehicleType"].__dict__)
 
-                    if self.__damageCfg is not None:
-                        attacker = p.arena.vehicles.get(attackerID)
+                    if p.name == self.publicInfo.name:
+                        # Update Health
+                        damage = self.__ownHealth - newHealth
+                        self.__ownHealth = newHealth
+
                         if p.team != attacker["team"]:
-                            if self.__damageCfg["debug"] == True:
-                                LOG_NOTE("Hit:", attacker["vehicleType"].__dict__)
-
                             if self.__damageCfg["hit_message"]["enabled"] == True and attackReasonID == 0:
                                 message = formatMessage(self.__damageCfg["hit_message"]["format"], attacker)
                                 MessengerEntry.g_instance.gui.addClientMessage(message)
