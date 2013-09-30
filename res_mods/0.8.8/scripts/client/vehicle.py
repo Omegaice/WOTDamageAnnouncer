@@ -276,14 +276,18 @@ class Vehicle(BigWorld.Entity):
         elif not self.isStarted:
             return
         else:
-            p = BigWorld.player()
-            if p is not None and p.name == self.publicInfo.name:
-                # Update Health
-                damage = self.__ownHealth - newHealth
-                self.__ownHealth = newHealth
+            try:
+                p = BigWorld.player()
+                if p is not None and p.name == self.publicInfo.name:
+                    # Update Health
+                    damage = self.__ownHealth - newHealth
+                    self.__ownHealth = newHealth
 
-                if self.__damageCfg is not None:
-                    try:
+                    if self.__damageCfg is not None:
+                        LOG_NOTE(dict(self.publicInfo))
+                        LOG_NOTE(p.__dict__)
+                        LOG_NOTE(p.arena.__dict__)
+
                         attacker = p.arena.vehicles.get(attackerID)
                         if p.team != attacker["team"]:
                             if self.__damageCfg["debug"] == True:
@@ -329,8 +333,11 @@ class Vehicle(BigWorld.Entity):
                                     message = message.replace("{{damage}}", str(damage))
 
                                     BigWorld.player().broadcast(chatManager.battleTeamChannelID, message.encode('ascii', 'xmlcharrefreplace'))
-                    except Exception, err:
-                        LOG_NOTE("Damage Announcer Error: ", err)
+            except Exception, err:
+                if self.__damageCfg["debug"]:
+                    MessengerEntry.g_instance.gui.addClientMessage("Damage Announcer Error: " + str(err))
+                else:
+                    LOG_NOTE("Damage Announcer Error: ", err)
 
             if not self.isPlayer:
                 marker = getattr(self, 'marker', None)
