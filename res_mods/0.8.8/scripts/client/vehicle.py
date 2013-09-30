@@ -277,6 +277,23 @@ class Vehicle(BigWorld.Entity):
             return
         else:
             try:
+                def formatMessage(inMessage,attacker):
+                    message = inMessage.replace("{{user}}", attacker["name"])
+                    message = message.replace("{{tier}}", str(attacker["vehicleType"].level))
+                    message = message.replace("{{tank_long}}", attacker["vehicleType"].type.userString)
+                    message = message.replace("{{tank_short}}", attacker["vehicleType"].type.shortUserString)
+                    message = message.replace("{{damage}}", str(damage))
+
+                    if message.find("{{reload}}") != -1:
+                        reload_time = attacker["vehicleType"].gun["reloadTime"]
+
+                        for item in attacker["vehicleType"].optionalDevices:
+                            if item is not None and "TankRammer" in item.name:
+                                reload_time *= 0.9
+
+                        message = message.replace("{{reload}}", "{0:.2f}".format(reload_time) + "s")
+                    return message
+
                 p = BigWorld.player()
                 if p is not None and p.name == self.publicInfo.name:
                     # Update Health
@@ -284,54 +301,20 @@ class Vehicle(BigWorld.Entity):
                     self.__ownHealth = newHealth
 
                     if self.__damageCfg is not None:
-                        LOG_NOTE(dict(self.publicInfo))
-                        LOG_NOTE(p.__dict__)
-                        LOG_NOTE(p.arena.__dict__)
-
                         attacker = p.arena.vehicles.get(attackerID)
                         if p.team != attacker["team"]:
                             if self.__damageCfg["debug"] == True:
                                 LOG_NOTE("Hit:", attacker["vehicleType"].__dict__)
 
-                                for item in attacker["vehicleType"].optionalDevices:
-                                    if item is not None:
-                                        LOG_NOTE("Equipment:", item.name)
-
                             if self.__damageCfg["hit_message"]["enabled"] == True and attackReasonID == 0:
-                                # Setup Message
-                                message = self.__damageCfg["hit_message"]["format"]
-
-                                # Replace values
-                                message = message.replace("{{user}}", attacker["name"])
-                                message = message.replace("{{tier}}", str(attacker["vehicleType"].level))
-                                message = message.replace("{{tank_long}}", attacker["vehicleType"].type.userString)
-                                message = message.replace("{{tank_short}}", attacker["vehicleType"].type.shortUserString)
-                                message = message.replace("{{damage}}", str(damage))
-
-                                if message.find("{{reload}}") != -1:
-                                    reload_time = attacker["vehicleType"].gun["reloadTime"]
-
-                                    for item in attacker["vehicleType"].optionalDevices:
-                                        if item is not None and "TankRammer" in item.name:
-                                            reload_time *= 0.9
-
-                                    message = message.replace("{{reload}}", "{0:.2f}".format(reload_time) + "s")
-
-                                # Send Message
+                                message = formatMessage(self.__damageCfg["hit_message"]["format"], attacker)
                                 MessengerEntry.g_instance.gui.addClientMessage(message)
                         else:
                             if self.__damageCfg["team_announce"]["enabled"] == True:
                                 if not BattleReplay.g_replayCtrl.isPlaying and damage > self.__damageCfg["team_announce"]["min_damage"]:
                                     from ChatManager import chatManager
 
-                                    message = self.__damageCfg["team_announce"]["format"]
-
-                                    # Replace values
-                                    message = message.replace("{{user}}", attacker["name"])
-                                    message = message.replace("{{tank_long}}", attacker["vehicleType"].type.userString)
-                                    message = message.replace("{{tank_short}}", attacker["vehicleType"].type.shortUserString)
-                                    message = message.replace("{{damage}}", str(damage))
-
+                                    message = formatMessage(self.__damageCfg["team_announce"]["format"], attacker)
                                     BigWorld.player().broadcast(chatManager.battleTeamChannelID, message.encode('ascii', 'xmlcharrefreplace'))
             except Exception, err:
                 if self.__damageCfg["debug"]:
