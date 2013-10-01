@@ -290,6 +290,28 @@ class Vehicle(BigWorld.Entity):
                 damage = self.__tankHealth[self.__battleID] - newHealth
                 self.__tankHealth[self.__battleID] = newHealth
 
+                def isOptionalEquipped(vehicle, optional_name):
+                    for item in vehicle.optionalDevices:
+                        if item is not None and optional_name in item.name:
+                            return True
+                    return False
+
+                def calculateReload(vehicle):
+                    loader_skill = 126.5
+                    if isOptionalEquipped(attacker["vehicleType"], "improvedVentilation"):
+                        loader_skill = 132.0
+
+                    other_bonus = 1.0
+                    # Take into account adrenaline skill
+                    if self.__tankHealth[self.__battleID] < attacker["vehicleType"].maxHealth * 0.1:
+                        other_bonus *= 0.909
+
+                    # Take into account rammer
+                    if isOptionalEquipped(attacker["vehicleType"], "TankRammer"):
+                        other_bonus *= 0.9
+
+                    return (attacker["vehicleType"].gun["reloadTime"] * 0.875) / (0.00375 * loader_skill) * other_bonus
+
                 def formatMessage(inMessage,attacker):
                     message = inMessage.replace("{{user}}", attacker["name"])
                     message = message.replace("{{tier}}", str(attacker["vehicleType"].level))
@@ -298,13 +320,8 @@ class Vehicle(BigWorld.Entity):
                     message = message.replace("{{damage}}", str(damage))
 
                     if message.find("{{reload}}") != -1:
-                        reload_time = attacker["vehicleType"].gun["reloadTime"]
+                        message = message.replace("{{reload}}", "{0:.2f}".format(calculateReload(attacker["vehicleType"])) + "s")
 
-                        for item in attacker["vehicleType"].optionalDevices:
-                            if item is not None and "TankRammer" in item.name:
-                                reload_time *= 0.9
-
-                        message = message.replace("{{reload}}", "{0:.2f}".format(reload_time) + "s")
                     return message
 
                 p = BigWorld.player()
