@@ -40,6 +40,8 @@ class Vehicle(BigWorld.Entity):
     except:
         pass
 
+    __tankHealth = {}
+
     def __init__(self):
         self.proxy = weakref.proxy(self)
         self.extras = {}
@@ -53,7 +55,7 @@ class Vehicle(BigWorld.Entity):
         self.__stopHornSoundCallback = None
         self.wgPhysics = None
         self.__isEnteringWorld = False
-        self.__ownHealth = 0
+        self.__battleID = 0
         self.__hasWarned = False
 
     def reload(self):
@@ -99,12 +101,19 @@ class Vehicle(BigWorld.Entity):
         player.initSpace()
         player.vehicle_onEnterWorld(self)
 
-        if BigWorld.player().name == self.publicInfo.name:
-            self.__ownHealth = self.typeDescriptor.maxHealth
+        # Setup Tank Parameters
+        for key, vehicle in player.arena.vehicles.iteritems():
+            if vehicle["name"] == self.publicInfo.name:
+                self.__battleID = key
+                break
+        if self.__battleID not in self.__tankHealth:
+            self.__tankHealth[self.__battleID] = self.typeDescriptor.maxHealth
 
         self.__isEnteringWorld = False
 
     def onLeaveWorld(self):
+        #if self.__tankHealth[self.__battleID] == 0:
+        #    del self.__tankHealth[self.__battleID]
         self.__stopExtras()
         BigWorld.player().vehicle_onLeaveWorld(self)
         assert not self.isStarted
@@ -277,6 +286,10 @@ class Vehicle(BigWorld.Entity):
             return
         else:
             try:
+                # Update Tank Health
+                damage = self.__tankHealth[self.__battleID] - newHealth
+                self.__tankHealth[self.__battleID] = newHealth
+
                 def formatMessage(inMessage,attacker):
                     message = inMessage.replace("{{user}}", attacker["name"])
                     message = message.replace("{{tier}}", str(attacker["vehicleType"].level))
@@ -296,18 +309,18 @@ class Vehicle(BigWorld.Entity):
 
                 p = BigWorld.player()
                 if p is not None and self.__damageCfg is not None:
-                    attacker = p.arena.vehicles.get(attackerID)
-                    if self.__damageCfg["debug"] == True:
-                        LOG_NOTE("Hit:", attacker["vehicleType"].__dict__)
+                    if self.__damageCfg["debug"]:
+                        LOG_NOTE("Hit:", p.arena.vehicles.get(attackerID), p.arena.vehicles.get(attackerID)["vehicleType"])
+                    if p.playerVehicleID == attackerID:
+                        if self.__damageCfg["hit_message"]["given"]["enabled"] == True and attackReasonID == 0:
+                            message = formatMessage(self.__damageCfg["hit_message"]["given"]["format"], p.arena.vehicles.get(self.__battleID))
+                            MessengerEntry.g_instance.gui.addClientMessage(message)
 
                     if p.name == self.publicInfo.name:
-                        # Update Health
-                        damage = self.__ownHealth - newHealth
-                        self.__ownHealth = newHealth
-
+                        attacker = p.arena.vehicles.get(attackerID)
                         if p.team != attacker["team"]:
-                            if self.__damageCfg["hit_message"]["enabled"] == True and attackReasonID == 0:
-                                message = formatMessage(self.__damageCfg["hit_message"]["format"], attacker)
+                            if self.__damageCfg["hit_message"]["recieved"]["enabled"] == True and attackReasonID == 0:
+                                message = formatMessage(self.__damageCfg["hit_message"]["recieved"]["format"], attacker)
                                 MessengerEntry.g_instance.gui.addClientMessage(message)
                         else:
                             if self.__damageCfg["team_announce"]["enabled"] == True:
@@ -317,10 +330,9 @@ class Vehicle(BigWorld.Entity):
                                     message = formatMessage(self.__damageCfg["team_announce"]["format"], attacker)
                                     BigWorld.player().broadcast(chatManager.battleTeamChannelID, message.encode('ascii', 'xmlcharrefreplace'))
             except Exception, err:
+                LOG_NOTE("Damage Announcer Error: ", err)
                 if self.__damageCfg["debug"]:
-                    MessengerEntry.g_instance.gui.addClientMessage("Damage Announcer Error: " + str(err))
-                else:
-                    LOG_NOTE("Damage Announcer Error: ", err)
+                    MessengerEntry.g_instance.gui.addClientMessage("<font color=\"#FF0000\">Damage Announcer Error: " + str(err) + "</font>")
 
             if not self.isPlayer:
                 marker = getattr(self, 'marker', None)

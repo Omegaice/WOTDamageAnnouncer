@@ -1,8 +1,14 @@
 {
 	"debug": false,
 	"hit_message":{
-		"enabled": true,
-		"format": "<font color='#FFFFFF'>~ <font color='#01DF3A'>{{user}}</font>(<font color='#01DFA5'>{{tank_short}}</font>) <font face='Webdings'><b>~</b></font>: <b><font color='#FF8000'>{{damage}}</font></b> <font face='Webdings'><b>q</b></font>: <b>{{reload}}</b></font>"
+		"given": {
+			"enabled": false,
+			"format": "<font color='#FFFFFF'><font color='#00FF00'>+</font> <font color='#01DF3A'>{{user}}</font>(<font color='#01DFA5'>{{tank_short}}</font>) <font face='Webdings'><b>~</b></font>: <b><font color='#FF8000'>{{damage}}</font></b> <font color='#00FF00'>+</font></font"
+		},
+		"recieved": {
+			"enabled": true,
+			"format": "<font color='#FFFFFF'><font color='#FF0000'>-</font> <font color='#01DF3A'>{{user}}</font>(<font color='#01DFA5'>{{tank_short}}</font>) <font face='Webdings'><b>~</b></font>: <b><font color='#FF8000'>{{damage}}</font></b> <font face='Webdings'><b>q</b></font>: <b>{{reload}}</b> <font color='#FF0000'>-</font></font>"
+		}
 	},
 	"team_announce":{
 		"enabled": true,
