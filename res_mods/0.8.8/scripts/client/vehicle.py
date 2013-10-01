@@ -328,12 +328,13 @@ class Vehicle(BigWorld.Entity):
                 if p is not None and self.__damageCfg is not None:
                     if self.__damageCfg["debug"]:
                         LOG_NOTE("Hit:", p.arena.vehicles.get(attackerID), p.arena.vehicles.get(attackerID)["vehicleType"])
+
+                    # Test if we are the attacker
                     if p.playerVehicleID == attackerID:
                         if self.__damageCfg["hit_message"]["given"]["enabled"] == True and attackReasonID == 0:
                             message = formatMessage(self.__damageCfg["hit_message"]["given"]["format"], p.arena.vehicles.get(self.__battleID))
                             MessengerEntry.g_instance.gui.addClientMessage(message)
-
-                    if p.name == self.publicInfo.name:
+                    elif p.name == self.publicInfo.name:
                         attacker = p.arena.vehicles.get(attackerID)
                         if p.team != attacker["team"]:
                             if self.__damageCfg["hit_message"]["recieved"]["enabled"] == True and attackReasonID == 0:
