@@ -338,7 +338,7 @@ class Vehicle(BigWorld.Entity):
                     message = message.replace("{{tank_long}}", attacker["vehicleType"].type.userString)
                     message = message.replace("{{tank_short}}", attacker["vehicleType"].type.shortUserString)
                     message = message.replace("{{damage}}", str(damage))
-                    message = message.replace("{{cur_health}}", str(newHealth))
+                    message = message.replace("{{cur_health}}", str(self.__tankHealth[attackerID]))
                     message = message.replace("{{max_health}}", str(attacker["vehicleType"].maxHealth))
 
                     if message.find("{{reload}}") != -1:
