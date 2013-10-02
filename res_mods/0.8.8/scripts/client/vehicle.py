@@ -315,6 +315,23 @@ class Vehicle(BigWorld.Entity):
 
                     return (attacker["vehicleType"].gun["reloadTime"] * 0.875) / (0.00375 * loader_skill) * other_bonus
 
+                def getShellPrice(nationID, shellID):
+                    import ResMgr, nations
+                    from items import _xml, vehicles
+                    from constants import ITEM_DEFS_PATH
+
+                    price = {}
+                    xmlPath = ITEM_DEFS_PATH + 'vehicles/' + nations.NAMES[nationID] + '/components/shells.xml'
+                    for name, subsection in ResMgr.openSection(xmlPath).items():
+                        if name != 'icons':
+                            xmlCtx = (None, xmlPath + '/' + name)
+                            if _xml.readInt(xmlCtx, subsection, 'id', 0, 65535) == shellID:
+                                price = _xml.readPrice(xmlCtx, subsection, 'price')
+                                break
+                    ResMgr.purge(xmlPath, True)
+
+                    return price
+
                 def formatMessage(inMessage,attacker):
                     message = inMessage.replace("{{user}}", attacker["name"])
                     message = message.replace("{{tier}}", str(attacker["vehicleType"].level))
@@ -338,6 +355,16 @@ class Vehicle(BigWorld.Entity):
                                     message = message.replace("{{shell_type}}", "HE")
                                 if shell["shell"]["kind"] == "HOLLOW_CHARGE":
                                     message = message.replace("{{shell_type}}", "HEAT")
+
+                            if message.find("{{if_shell_gold}}") != -1:
+                                start = message.find("{{if_shell_gold}}")
+                                end = message.find("{{endif}}")
+                                if end != -1:
+                                    price = getShellPrice(shell["shell"]["id"][0], shell["shell"]["id"][1])
+                                    if price[1] == 0:
+                                        message = message[:start] + message[end+9:]
+                                    else:
+                                        message = message[:start] + message[start+17:end] + message[end+9:]
                             break
 
                     return message
