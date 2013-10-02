@@ -327,15 +327,18 @@ class Vehicle(BigWorld.Entity):
                     if message.find("{{reload}}") != -1:
                         message = message.replace("{{reload}}", "{0:.2f}".format(calculateReload(attacker["vehicleType"])) + "s")
 
-                    if message.find("{{shell_type}}") != -1:
-                        if self.__hitType in (0, 2, 6, 10, 14, 18):
-                            message = message.replace("{{shell_type}}", "AP")
-                        if self.__hitType in (1, 5, 9, 13, 17, 21):
-                            message = message.replace("{{shell_type}}", "APCR")
-                        if self.__hitType in (3, 7, 11, 15, 19):
-                            message = message.replace("{{shell_type}}", "HE")
-                        if self.__hitType in (4, 8, 12, 16, 20):
-                            message = message.replace("{{shell_type}}", "HEAT")
+                    for shell in attacker["vehicleType"].gun["shots"]:
+                        if self.__hitType == shell["shell"]["effectsIndex"]:
+                            if message.find("{{shell_type}}") != -1:
+                                if shell["shell"]["kind"] == "ARMOR_PIERCING":
+                                    message = message.replace("{{shell_type}}", "AP")
+                                if shell["shell"]["kind"] == "ARMOR_PIERCING_CR":
+                                    message = message.replace("{{shell_type}}", "APCR")
+                                if shell["shell"]["kind"] == "HIGH_EXPLOSIVE":
+                                    message = message.replace("{{shell_type}}", "HE")
+                                if shell["shell"]["kind"] == "HOLLOW_CHARGE":
+                                    message = message.replace("{{shell_type}}", "HEAT")
+                            break
 
                     return message
 
