@@ -3,11 +3,11 @@
 	"hit_message":{
 		"given": {
 			"enabled": false,
-			"format": "<font color='#FFFFFF'><font color='#00FF00'>+</font> <font color='#01DF3A'>{{user}}</font>(<font color='#01DFA5'>{{tank_short}}</font>) <font face='Webdings'><b>~</b></font>: <b><font color='#FF8000'>{{damage}}</font></b> <font color='#00FF00'>+</font></font"
+			"format": "<font color='#FFFFFF'>~ <font color='#01DF3A'>{{user}}</font>(<font color='#01DFA5'>{{tank_short}}</font>) <font face='Webdings'><b>~</b></font>: <b><font color='#FF8000'>{{damage}}</font></b></font>"
 		},
 		"recieved": {
 			"enabled": true,
-			"format": "<font color='#FFFFFF'><font color='#FF0000'>-</font> <font color='#01DF3A'>{{user}}</font>(<font color='#01DFA5'>{{tank_short}}</font>) <font face='Webdings'><b>~</b></font>: <b><font color='#FF8000'>{{damage}}</font></b> <font face='Webdings'><b>q</b></font>: <b>{{reload}}</b> <font color='#FF0000'>-</font></font>"
+			"format": "<font color='#FFFFFF'>~ <font color='#01DF3A'>{{user}}</font>(<font color='#01DFA5'>{{tank_short}}</font>) <font face='Webdings'><b>~</b></font>: <b><font color='#FF8000'>{{damage}}</font></b>(<font color='#FFBF00'>{{shell_type}}{{if_shell_gold}}<font face='Webdings'>‘</font>{{endif}}</font>) <font face='Webdings'><b>q</b></font>: <b>{{reload}}</b></font>"
 		}
 	},
 	"team_announce":{
