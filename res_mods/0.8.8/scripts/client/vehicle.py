@@ -56,6 +56,7 @@ class Vehicle(BigWorld.Entity):
         self.wgPhysics = None
         self.__isEnteringWorld = False
         self.__battleID = 0
+        self.__hitType = 0
         self.__hasWarned = False
 
     def reload(self):
@@ -137,6 +138,7 @@ class Vehicle(BigWorld.Entity):
         if not self.isStarted:
             return
         else:
+            self.__hitType = effectsIndex
             descr = self.typeDescriptor
             effectsDescr = vehicles.g_cache.shotEffects[effectsIndex]
             firstHitDir = None
@@ -192,6 +194,7 @@ class Vehicle(BigWorld.Entity):
         if not self.isStarted:
             return
         else:
+            self.__hitType = effectsIndex
             impulse = vehicles.g_cache.shotEffects[effectsIndex]['targetImpulse']
             dir = self.position - center
             dir.normalise()
@@ -323,6 +326,16 @@ class Vehicle(BigWorld.Entity):
 
                     if message.find("{{reload}}") != -1:
                         message = message.replace("{{reload}}", "{0:.2f}".format(calculateReload(attacker["vehicleType"])) + "s")
+
+                    if message.find("{{shell_type}}") != -1:
+                        if self.__hitType in (0, 2, 6, 10, 14, 18):
+                            message = message.replace("{{shell_type}}", "AP")
+                        if self.__hitType in (1, 5, 9, 13, 17, 21):
+                            message = message.replace("{{shell_type}}", "APCR")
+                        if self.__hitType in (3, 7, 11, 15, 19):
+                            message = message.replace("{{shell_type}}", "HE")
+                        if self.__hitType in (4, 8, 12, 16, 20):
+                            message = message.replace("{{shell_type}}", "HEAT")
 
                     return message
 
