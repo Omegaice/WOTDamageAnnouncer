@@ -327,7 +327,7 @@ class Vehicle(BigWorld.Entity):
                 p = BigWorld.player()
                 if p is not None and self.__damageCfg is not None:
                     if self.__damageCfg["debug"]:
-                        LOG_NOTE("Hit:", p.arena.vehicles.get(attackerID), p.arena.vehicles.get(attackerID)["vehicleType"])
+                        LOG_NOTE("Hit:", p.arena.vehicles.get(attackerID), p.arena.vehicles.get(attackerID)["vehicleType"].__dict__)
 
                     # Test if we are the attacker
                     if p.playerVehicleID == attackerID:
