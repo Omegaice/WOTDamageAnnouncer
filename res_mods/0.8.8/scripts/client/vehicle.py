@@ -351,12 +351,20 @@ class Vehicle(BigWorld.Entity):
                             if message.find("{{shell_type}}") != -1:
                                 if shell["shell"]["kind"] == "ARMOR_PIERCING":
                                     message = message.replace("{{shell_type}}", "AP")
+                                    if message.find("{{c:shell}}") != -1:
+                                        message = message.replace("{{c:shell}}", self.__damageCfg["color"]["shell"]["ap"])
                                 if shell["shell"]["kind"] == "ARMOR_PIERCING_CR":
                                     message = message.replace("{{shell_type}}", "APCR")
+                                    if message.find("{{c:shell}}") != -1:
+                                        message = message.replace("{{c:shell}}", self.__damageCfg["color"]["shell"]["apcr"])
                                 if shell["shell"]["kind"] == "HIGH_EXPLOSIVE":
                                     message = message.replace("{{shell_type}}", "HE")
+                                    if message.find("{{c:shell}}") != -1:
+                                        message = message.replace("{{c:shell}}", self.__damageCfg["color"]["shell"]["he"])
                                 if shell["shell"]["kind"] == "HOLLOW_CHARGE":
                                     message = message.replace("{{shell_type}}", "HEAT")
+                                    if message.find("{{c:shell}}") != -1:
+                                        message = message.replace("{{c:shell}}", self.__damageCfg["color"]["shell"]["heat"])
 
                             if message.find("{{if_shell_gold}}") != -1:
                                 start = message.find("{{if_shell_gold}}")
