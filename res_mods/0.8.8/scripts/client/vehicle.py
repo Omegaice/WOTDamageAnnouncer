@@ -113,8 +113,6 @@ class Vehicle(BigWorld.Entity):
         self.__isEnteringWorld = False
 
     def onLeaveWorld(self):
-        #if self.__tankHealth[self.__battleID] == 0:
-        #    del self.__tankHealth[self.__battleID]
         self.__stopExtras()
         BigWorld.player().vehicle_onLeaveWorld(self)
         assert not self.isStarted
@@ -338,6 +336,10 @@ class Vehicle(BigWorld.Entity):
                     message = message.replace("{{tank_long}}", attacker["vehicleType"].type.userString)
                     message = message.replace("{{tank_short}}", attacker["vehicleType"].type.shortUserString)
                     message = message.replace("{{damage}}", str(damage))
+
+                    # Health Parameters
+                    if attackerID not in self.__tankHealth:
+                        self.__tankHealth[attackerID] = attacker["vehicleType"].maxHealth
                     message = message.replace("{{cur_health}}", str(self.__tankHealth[attackerID]))
                     message = message.replace("{{max_health}}", str(attacker["vehicleType"].maxHealth))
 
@@ -372,7 +374,7 @@ class Vehicle(BigWorld.Entity):
                 p = BigWorld.player()
                 if p is not None and self.__damageCfg is not None:
                     if self.__damageCfg["debug"]:
-                        LOG_NOTE("Hit:", p.arena.vehicles.get(attackerID), p.arena.vehicles.get(attackerID)["vehicleType"].__dict__)
+                        LOG_NOTE("Hit:", attackerID, p.arena.vehicles.get(attackerID), p.arena.vehicles.get(attackerID)["vehicleType"].__dict__)
 
                     # Test if we are the attacker
                     if p.playerVehicleID == attackerID:
