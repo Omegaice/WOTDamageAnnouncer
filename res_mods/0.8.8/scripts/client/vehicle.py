@@ -292,6 +292,8 @@ class Vehicle(BigWorld.Entity):
                 self.__tankHealth[self.__battleID] = newHealth
 
                 # Get Attacker
+                p = BigWorld.player()
+                current = p.arena.vehicles.get(self.__battleID)
                 attacker = p.arena.vehicles.get(attackerID)
 
                 # Update attackers health if they have not been seen
@@ -337,8 +339,24 @@ class Vehicle(BigWorld.Entity):
 
                     return price
 
-                def formatMessage(inMessage,attacker):
-                    message = inMessage.replace("{{user}}", attacker["name"])
+                def formatMessage(inMessage, defenderID, attackerID):
+                    message = inMessage
+
+                    # Get Information
+                    p = BigWorld.player()
+                    current = p.arena.vehicles.get(defenderID)
+                    attacker = p.arena.vehicles.get(attackerID)
+
+                    # Self Messages
+                    message = message.replace("{{self_user}}", current["name"])
+                    message = message.replace("{{self_tier}}", str(current["vehicleType"].level))
+                    message = message.replace("{{self_tank_long}}", current["vehicleType"].type.userString)
+                    message = message.replace("{{self_tank_short}}", current["vehicleType"].type.shortUserString)
+                    message = message.replace("{{self_cur_health}}", str(self.__tankHealth[defenderID]))
+                    message = message.replace("{{self_max_health}}", str(current["vehicleType"].maxHealth))
+
+                    # Enemy Messages
+                    message = message.replace("{{user}}", attacker["name"])
                     message = message.replace("{{tier}}", str(attacker["vehicleType"].level))
                     message = message.replace("{{tank_long}}", attacker["vehicleType"].type.userString)
                     message = message.replace("{{tank_short}}", attacker["vehicleType"].type.shortUserString)
@@ -382,21 +400,26 @@ class Vehicle(BigWorld.Entity):
 
                     return message
 
-                p = BigWorld.player()
-                if p is not None and self.__damageCfg is not None:
+                if self.__damageCfg is not None:
                     if self.__damageCfg["debug"]:
                         LOG_NOTE("Hit:", attackerID, attacker, attacker["vehicleType"].__dict__)
 
                     # Test if we are the attacker
                     if p.playerVehicleID == attackerID:
                         if self.__damageCfg["hit_message"]["given"]["enabled"] == True and attackReasonID == 0:
-                            message = formatMessage(self.__damageCfg["hit_message"]["given"]["format"], attacker)
+                            message = formatMessage(self.__damageCfg["hit_message"]["given"]["format"], attackerID, self.__battleID)
                             MessengerEntry.g_instance.gui.addClientMessage(message)
+
+                            if self.__damageCfg["debug"]:
+                                LOG_NOTE("Damage Given: ", message)
                     elif p.name == self.publicInfo.name:
                         if p.team != attacker["team"]:
                             if self.__damageCfg["hit_message"]["recieved"]["enabled"] == True and attackReasonID == 0:
-                                message = formatMessage(self.__damageCfg["hit_message"]["recieved"]["format"], attacker)
+                                message = formatMessage(self.__damageCfg["hit_message"]["recieved"]["format"], self.__battleID, attackerID)
                                 MessengerEntry.g_instance.gui.addClientMessage(message)
+
+                                if self.__damageCfg["debug"]:
+                                    LOG_NOTE("Damage recieved: ", message)
                         else:
                             if self.__damageCfg["team_announce"]["enabled"] == True:
                                 if not BattleReplay.g_replayCtrl.isPlaying and damage > self.__damageCfg["team_announce"]["min_damage"]:

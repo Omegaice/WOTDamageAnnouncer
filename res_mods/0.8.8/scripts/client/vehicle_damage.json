@@ -11,7 +11,7 @@
 	"hit_message":{
 		"given": {
 			"enabled": false,
-			"format": "<font color='#FFFFFF'>~ <font color='#01DF3A'>{{user}}</font>(<font color='#01DFA5'>{{tank_short}}</font>) <font face='Webdings'><b>~</b></font>: <b><font color='#FF8000'>{{damage}}</font></b></font>"
+			"format": "<font color='#FFFFFF'>~ {{self_user}}({{self_tank_short}} {{self_cur_health}}/{{self_max_health}}) vs {{user}}({{tank_short}} {{cur_health}}/{{max_health}}) ~: {{damage}}</font>"
 		},
 		"recieved": {
 			"enabled": true,
