@@ -291,6 +291,9 @@ class Vehicle(BigWorld.Entity):
                 damage = self.__tankHealth[self.__battleID] - newHealth
                 self.__tankHealth[self.__battleID] = newHealth
 
+                # Get Attacker
+                attacker = p.arena.vehicles.get(attackerID)
+
                 # Update attackers health if they have not been seen
                 if attackerID not in self.__tankHealth:
                     self.__tankHealth[attackerID] = attacker["vehicleType"].maxHealth
@@ -382,9 +385,7 @@ class Vehicle(BigWorld.Entity):
                 p = BigWorld.player()
                 if p is not None and self.__damageCfg is not None:
                     if self.__damageCfg["debug"]:
-                        LOG_NOTE("Hit:", attackerID, p.arena.vehicles.get(attackerID), p.arena.vehicles.get(attackerID)["vehicleType"].__dict__)
-
-                    attacker = p.arena.vehicles.get(attackerID)
+                        LOG_NOTE("Hit:", attackerID, attacker, attacker["vehicleType"].__dict__)
 
                     # Test if we are the attacker
                     if p.playerVehicleID == attackerID:
