@@ -291,6 +291,10 @@ class Vehicle(BigWorld.Entity):
                 damage = self.__tankHealth[self.__battleID] - newHealth
                 self.__tankHealth[self.__battleID] = newHealth
 
+                # Update attackers health if they have not been seen
+                if attackerID not in self.__tankHealth:
+                    self.__tankHealth[attackerID] = attacker["vehicleType"].maxHealth
+
                 def isOptionalEquipped(vehicle, optional_name):
                     for item in vehicle.optionalDevices:
                         if item is not None and optional_name in item.name:
@@ -304,14 +308,14 @@ class Vehicle(BigWorld.Entity):
 
                     other_bonus = 1.0
                     # Take into account adrenaline skill
-                    if self.__tankHealth[self.__battleID] < attacker["vehicleType"].maxHealth * 0.1:
+                    if self.__tankHealth[attackerID] < attacker["vehicleType"].maxHealth * 0.1:
                         other_bonus *= 0.909
 
                     # Take into account rammer
                     if isOptionalEquipped(attacker["vehicleType"], "TankRammer"):
                         other_bonus *= 0.9
 
-                    return (attacker["vehicleType"].gun["reloadTime"] * 0.875) / (0.00375 * loader_skill) * other_bonus
+                    return ((attacker["vehicleType"].gun["reloadTime"] * 0.875) / (0.00375 * loader_skill + 0.5)) * other_bonus
 
                 def getShellPrice(nationID, shellID):
                     import ResMgr, nations
@@ -336,10 +340,6 @@ class Vehicle(BigWorld.Entity):
                     message = message.replace("{{tank_long}}", attacker["vehicleType"].type.userString)
                     message = message.replace("{{tank_short}}", attacker["vehicleType"].type.shortUserString)
                     message = message.replace("{{damage}}", str(damage))
-
-                    # Health Parameters
-                    if attackerID not in self.__tankHealth:
-                        self.__tankHealth[attackerID] = attacker["vehicleType"].maxHealth
                     message = message.replace("{{cur_health}}", str(self.__tankHealth[attackerID]))
                     message = message.replace("{{max_health}}", str(attacker["vehicleType"].maxHealth))
 
@@ -384,13 +384,14 @@ class Vehicle(BigWorld.Entity):
                     if self.__damageCfg["debug"]:
                         LOG_NOTE("Hit:", attackerID, p.arena.vehicles.get(attackerID), p.arena.vehicles.get(attackerID)["vehicleType"].__dict__)
 
+                    attacker = p.arena.vehicles.get(attackerID)
+
                     # Test if we are the attacker
                     if p.playerVehicleID == attackerID:
                         if self.__damageCfg["hit_message"]["given"]["enabled"] == True and attackReasonID == 0:
-                            message = formatMessage(self.__damageCfg["hit_message"]["given"]["format"], p.arena.vehicles.get(self.__battleID))
+                            message = formatMessage(self.__damageCfg["hit_message"]["given"]["format"], attacker)
                             MessengerEntry.g_instance.gui.addClientMessage(message)
                     elif p.name == self.publicInfo.name:
-                        attacker = p.arena.vehicles.get(attackerID)
                         if p.team != attacker["team"]:
                             if self.__damageCfg["hit_message"]["recieved"]["enabled"] == True and attackReasonID == 0:
                                 message = formatMessage(self.__damageCfg["hit_message"]["recieved"]["format"], attacker)
