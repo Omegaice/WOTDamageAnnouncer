@@ -1,4 +1,7 @@
-import py_compile, zipfile
+import py_compile, zipfile, os
+
+if os.path.exists("ReceivedDamage.zip"):
+	os.remove("ReceivedDamage.zip")
 
 py_compile.compile("res_mods/0.8.8/scripts/client/vehicle.py")
 
