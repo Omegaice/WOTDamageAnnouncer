@@ -402,19 +402,24 @@ class Vehicle(BigWorld.Entity):
 
                 if self.__damageCfg is not None:
                     if self.__damageCfg["debug"]:
-                        #LOG_NOTE(self.__dict__)
-                        #LOG_NOTE("Camera Vehicle:", BigWorld.camera().curVehicleID)
                         LOG_NOTE("Hit:", attackerID, attacker, attacker["vehicleType"].__dict__)
 
+                    currentVehicleID = p.playerVehicleID
+                    if hasattr(BigWorld.player().inputHandler.ctrl, 'curVehicleID') and self.__damageCfg["hit_message"]["spectator"]:
+                        vehicleID = BigWorld.player().inputHandler.ctrl.curVehicleID
+                        LOG_NOTE("Spectating: ", vehicleID)
+                        if vehicleID is not None:
+                            currentVehicleID = vehicleID
+
                     # Test if we are the attacker
-                    if p.playerVehicleID == attackerID:
+                    if currentVehicleID == attackerID:
                         if self.__damageCfg["hit_message"]["given"]["enabled"] == True and attackReasonID == 0:
                             message = formatMessage(self.__damageCfg["hit_message"]["given"]["format"], attackerID, self.__battleID)
                             MessengerEntry.g_instance.gui.addClientMessage(message)
 
                             if self.__damageCfg["debug"]:
                                 LOG_NOTE("Damage Given: ", message)
-                    elif p.name == self.publicInfo.name:
+                    elif self.__battleID == currentVehicleID:
                         if p.team != attacker["team"]:
                             if self.__damageCfg["hit_message"]["recieved"]["enabled"] == True and attackReasonID == 0:
                                 message = formatMessage(self.__damageCfg["hit_message"]["recieved"]["format"], self.__battleID, attackerID)
