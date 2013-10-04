@@ -350,16 +350,16 @@ class Vehicle(BigWorld.Entity):
                     # Self Messages
                     message = message.replace("{{self_user}}", current["name"])
                     message = message.replace("{{self_tier}}", str(current["vehicleType"].level))
-                    message = message.replace("{{self_tank_long}}", current["vehicleType"].type.userString)
-                    message = message.replace("{{self_tank_short}}", current["vehicleType"].type.shortUserString)
+                    message = message.replace("{{self_tank_long}}", unicode(current["vehicleType"].type.userString, 'utf-8'))
+                    message = message.replace("{{self_tank_short}}", unicode(current["vehicleType"].type.shortUserString, 'utf-8'))
                     message = message.replace("{{self_cur_health}}", str(self.__tankHealth[defenderID]))
                     message = message.replace("{{self_max_health}}", str(current["vehicleType"].maxHealth))
 
                     # Enemy Messages
                     message = message.replace("{{user}}", attacker["name"])
                     message = message.replace("{{tier}}", str(attacker["vehicleType"].level))
-                    message = message.replace("{{tank_long}}", attacker["vehicleType"].type.userString)
-                    message = message.replace("{{tank_short}}", attacker["vehicleType"].type.shortUserString)
+                    message = message.replace("{{tank_long}}", unicode(attacker["vehicleType"].type.userString, 'utf-8'))
+                    message = message.replace("{{tank_short}}", unicode(attacker["vehicleType"].type.shortUserString, 'utf-8'))
                     message = message.replace("{{damage}}", str(damage))
                     message = message.replace("{{cur_health}}", str(self.__tankHealth[attackerID]))
                     message = message.replace("{{max_health}}", str(attacker["vehicleType"].maxHealth))
@@ -402,6 +402,8 @@ class Vehicle(BigWorld.Entity):
 
                 if self.__damageCfg is not None:
                     if self.__damageCfg["debug"]:
+                        #LOG_NOTE(self.__dict__)
+                        #LOG_NOTE("Camera Vehicle:", BigWorld.camera().curVehicleID)
                         LOG_NOTE("Hit:", attackerID, attacker, attacker["vehicleType"].__dict__)
 
                     # Test if we are the attacker
@@ -425,7 +427,7 @@ class Vehicle(BigWorld.Entity):
                                 if not BattleReplay.g_replayCtrl.isPlaying and damage > self.__damageCfg["team_announce"]["min_damage"]:
                                     from ChatManager import chatManager
 
-                                    message = formatMessage(self.__damageCfg["team_announce"]["format"], attacker)
+                                    message = formatMessage(self.__damageCfg["team_announce"]["format"], self.__battleID, attackerID)
                                     BigWorld.player().broadcast(chatManager.battleTeamChannelID, message.encode('ascii', 'xmlcharrefreplace'))
             except Exception, err:
                 LOG_NOTE("Damage Announcer Error: ", err)
