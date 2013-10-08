@@ -35,11 +35,11 @@ class Vehicle(BigWorld.Entity):
     __damageCfg = None
     try:
         from xml.dom import minidom
-        path_items = minidom.parse(os.getcwd() + os.sep + 'paths.xml').getElementsByTagName('Path')
+        path_items = minidom.parse(os.path.join(os.getcwd(), 'paths.xml')).getElementsByTagName('Path')
         for root in path_items:
-            path = os.getcwd() + os.sep + root.childNodes[0].data
+            path = os.path.join(os.getcwd(), root.childNodes[0].data)
             if os.path.isdir(path):
-                conf_file = path + os.sep + 'scripts' + os.sep + 'client' + os.sep + 'vehicle_damage.json'
+                conf_file = os.path.join(path, 'scripts', 'client', 'vehicle_damage.json')
                 if os.path.isfile(conf_file):
                     with open(conf_file) as data_file:
                         __damageCfg = json.load(data_file)
