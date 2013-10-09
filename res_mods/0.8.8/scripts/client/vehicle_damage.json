@@ -1,13 +1,5 @@
 {
 	"debug": false,
-	"color":{
-		"shell":{
-			"ap": "#FFBF00",
-			"apcr": "#FFBF00",
-			"he": "#FFBF00",
-			"heat": "#FFBF00"
-		}
-	},
 	"hit_message":{
 		"given": {
 			"enabled": false,
@@ -22,5 +14,21 @@
 		"enabled": true,
 		"min_damage": 25,
 		"format": "{{user}} ({{tank_long}}) just team attacked me for {{damage}} damage!"
+	},
+	"color":{
+		"shell":{
+			"ap": "#FFBF00",
+			"apcr": "#FFBF00",
+			"he": "#FFBF00",
+			"heat": "#FFBF00"
+		}
+	},
+	"name": {
+		"shell":{
+			"ap": "AP",
+			"apcr": "APCR",
+			"he": "HE",
+			"heat": "HEAT"
+		}
 	}
 }
