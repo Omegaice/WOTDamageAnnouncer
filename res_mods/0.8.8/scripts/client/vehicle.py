@@ -407,7 +407,6 @@ class Vehicle(BigWorld.Entity):
                     currentVehicleID = p.playerVehicleID
                     if hasattr(BigWorld.player().inputHandler.ctrl, 'curVehicleID') and self.__damageCfg["hit_message"]["spectator"]:
                         vehicleID = BigWorld.player().inputHandler.ctrl.curVehicleID
-                        LOG_NOTE("Spectating: ", vehicleID)
                         if vehicleID is not None:
                             currentVehicleID = vehicleID
 
