@@ -34,11 +34,17 @@ class Vehicle(BigWorld.Entity):
 
     __damageCfg = None
     try:
-        configuration_file = os.getcwd() + os.sep + 'res_mods' + os.sep + '0.8.8' + os.sep + 'scripts' + os.sep + 'client' + os.sep + 'vehicle_damage.json'
-        with open(configuration_file) as data_file:
-            __damageCfg = json.load(data_file)
-    except:
-        pass
+        from xml.dom import minidom
+        path_items = minidom.parse(os.path.join(os.getcwd(), 'paths.xml')).getElementsByTagName('Path')
+        for root in path_items:
+            path = os.path.join(os.getcwd(), root.childNodes[0].data)
+            if os.path.isdir(path):
+                conf_file = os.path.join(path, 'scripts', 'client', 'vehicle_damage.json')
+                if os.path.isfile(conf_file):
+                    with open(conf_file) as data_file:
+                        __damageCfg = json.load(data_file)
+    except Exception, err:
+        LOG_NOTE("Error: ", err)
 
     __tankHealth = {}
 
