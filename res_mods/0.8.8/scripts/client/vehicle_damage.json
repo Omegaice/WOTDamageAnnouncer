@@ -1,6 +1,7 @@
 {
 	"debug": false,
 	"hit_message":{
+		"spectator": false,
 		"given": {
 			"enabled": false,
 			"format": "<font color='#FFFFFF'>~ {{self_user}}({{self_tank_short}} {{self_cur_health}}/{{self_max_health}}) vs {{user}}({{tank_short}} {{cur_health}}/{{max_health}}) ~: {{damage}}</font>"
