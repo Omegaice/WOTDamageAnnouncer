@@ -15,12 +15,12 @@
 		},
 		"recieved": {
 			"enabled": true,
-			"format": "<font color='#FFFFFF'>~ <font color='#01DF3A'>{{user}}</font>(<font color='#01DFA5'>{{tank_short}}</font>) <font face='Webdings'><b>~</b></font>: <b><font color='#FF8000'>{{damage}}</font></b>(<font color='{{c:shell}}'>{{shell_type}}{{if_shell_gold}}<font face='Webdings'>‘</font>{{endif}}</font>) <font face='Webdings'><b>q</b></font>: <b>{{reload}}</b></font>"
+			"format": "<font color='#FFFFFF'>~ <font color='#01DF3A'>{{user}}</font>(<font color='#01DFA5'>{{tank_short}}</font>) <font face='Webdings'><b>~</b></font>: <b><font color='#FF8000'>{{damage}}</font></b>(<font color='{{c:shell}}'>{{shell_type}}{{if_shell_gold}}<font face='Webdings'>‘</font>{{endif}}</font>) <font face='Webdings'><b>q</b></font>: <b>{{shot_delay}}</b></font>"
 		}
 	},
 	"team_announce":{
 		"enabled": true,
 		"min_damage": 25,
-		"format": "{{user}} ({{tank_long}} just team attacked me for {{damage}} damage!"
+		"format": "{{user}} ({{tank_long}}) just team attacked me for {{damage}} damage!"
 	}
 }

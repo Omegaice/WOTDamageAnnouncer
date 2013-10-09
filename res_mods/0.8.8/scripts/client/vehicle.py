@@ -404,6 +404,26 @@ class Vehicle(BigWorld.Entity):
                                         message = message[:start] + message[start+17:end] + message[end+9:]
                             break
 
+                    # Autoloader
+                    if message.find("{{shot_delay}}") != -1:
+                        if attacker["vehicleType"].gun["clip"][0] != 1:
+                            message = message.replace("{{shot_delay}}", "{0:.2f}".format(attacker["vehicleType"].gun["clip"][1]) + "s")
+                        else:
+                            message = message.replace("{{shot_delay}}", "{0:.2f}".format(calculateReload(attacker["vehicleType"])) + "s")
+
+                    if attacker["vehicleType"].gun["clip"][0] != 1:
+                        if message.find("{{clip_size}}") != -1:
+                            message = message.replace("{{clip_size}}", str(attacker["vehicleType"].gun["clip"][0]))
+                        if message.find("{{clip_delay}}") != -1:
+                            message = message.replace("{{clip_delay}}", "{0:.2f}".format(attacker["vehicleType"].gun["clip"][1]) + "s")
+
+                    if "burst" in attacker["vehicleType"].gun != 1:
+                        if message.find("{{burst_size}}") != -1:
+                            message = message.replace("{{burst_size}}", str(attacker["vehicleType"].gun["burst"][0]))
+                        if message.find("{{burst_delay}}") != -1:
+                            message = message.replace("{{burst_delay}}", "{0:.2f}".format(attacker["vehicleType"].gun["burst"][1]) + "s")
+
+
                     return message
 
                 if self.__damageCfg is not None:
