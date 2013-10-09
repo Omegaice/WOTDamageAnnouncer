@@ -21,6 +21,6 @@
 	"team_announce":{
 		"enabled": true,
 		"min_damage": 25,
-		"format": "{{user}} ({{tank_long}} just team attacked me for {{damage}} damage!"
+		"format": "{{user}} ({{tank_long}}) just team attacked me for {{damage}} damage!"
 	}
 }
