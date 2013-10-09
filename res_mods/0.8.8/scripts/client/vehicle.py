@@ -377,19 +377,19 @@ class Vehicle(BigWorld.Entity):
                         if self.__hitType == shell["shell"]["effectsIndex"]:
                             if message.find("{{shell_type}}") != -1:
                                 if shell["shell"]["kind"] == "ARMOR_PIERCING":
-                                    message = message.replace("{{shell_type}}", "AP")
+                                    message = message.replace("{{shell_type}}", self.__damageCfg["name"]["shell"]["ap"])
                                     if message.find("{{c:shell}}") != -1:
                                         message = message.replace("{{c:shell}}", self.__damageCfg["color"]["shell"]["ap"])
                                 if shell["shell"]["kind"] == "ARMOR_PIERCING_CR":
-                                    message = message.replace("{{shell_type}}", "APCR")
+                                    message = message.replace("{{shell_type}}", self.__damageCfg["name"]["shell"]["apcr"])
                                     if message.find("{{c:shell}}") != -1:
                                         message = message.replace("{{c:shell}}", self.__damageCfg["color"]["shell"]["apcr"])
                                 if shell["shell"]["kind"] == "HIGH_EXPLOSIVE":
-                                    message = message.replace("{{shell_type}}", "HE")
+                                    message = message.replace("{{shell_type}}", self.__damageCfg["name"]["shell"]["he"])
                                     if message.find("{{c:shell}}") != -1:
                                         message = message.replace("{{c:shell}}", self.__damageCfg["color"]["shell"]["he"])
                                 if shell["shell"]["kind"] == "HOLLOW_CHARGE":
-                                    message = message.replace("{{shell_type}}", "HEAT")
+                                    message = message.replace("{{shell_type}}", self.__damageCfg["name"]["shell"]["heat"])
                                     if message.find("{{c:shell}}") != -1:
                                         message = message.replace("{{c:shell}}", self.__damageCfg["color"]["shell"]["heat"])
 
