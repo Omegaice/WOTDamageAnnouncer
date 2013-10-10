@@ -376,7 +376,7 @@ class Vehicle(BigWorld.Entity):
                     for shell in attacker["vehicleType"].gun["shots"]:
                         if self.__hitType == shell["shell"]["effectsIndex"]:
                             shot_average = shell["shell"]["damage"][0]
-                            message = message.replace("{{damage_roll}}", str(((damage - shell["shell"]["damage"][0]) / shell["shell"]["damage"][0]) * 100) + "%")
+                            message = message.replace("{{damage_roll}}", "{0:.2f}".format(((damage - shell["shell"]["damage"][0]) / shell["shell"]["damage"][0]) * 100) + "%")
 
                             if message.find("{{shell_type}}") != -1:
                                 if shell["shell"]["kind"] == "ARMOR_PIERCING":
