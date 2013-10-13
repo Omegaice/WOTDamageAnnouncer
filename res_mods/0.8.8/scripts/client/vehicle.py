@@ -499,30 +499,22 @@ class Vehicle(BigWorld.Entity):
 
                 # Test if we are the attacker
                 if currentVehicleID == attackerID:
-                    if self.__damageCfg["hit_message"]["given"]["enabled"] == True:
-                        message = ""
+                    if self.__damageCfg["hit_message"]["given"]["enabled"]:
                         if damage == 0:
-                            message = formatMessage(self.__damageCfg["hit_message"]["given"]["format_bounce"], attackerID, self.__battleID)
+                            if self.__damageCfg["hit_message"]["given"]["bounce"]["enabled"]:
+                                MessengerEntry.g_instance.gui.addClientMessage(formatMessage(self.__damageCfg["hit_message"]["given"]["bounce"]["format"], attackerID, self.__battleID))
                         else:
-                            message = formatMessage(self.__damageCfg["hit_message"]["given"]["format_damage"], attackerID, self.__battleID)
-                        MessengerEntry.g_instance.gui.addClientMessage(message)
-
-                        if self.__damageCfg["debug"]:
-                            LOG_NOTE("Damage Given: ", message)
+                            MessengerEntry.g_instance.gui.addClientMessage(formatMessage(self.__damageCfg["hit_message"]["given"]["format"], attackerID, self.__battleID))
                 elif self.__battleID == currentVehicleID:
                     if p.team != attacker["team"]:
-                        if self.__damageCfg["hit_message"]["recieved"]["enabled"] == True:
-                            message = ""
+                        if self.__damageCfg["hit_message"]["recieved"]["enabled"]:
                             if damage == 0:
-                                message = formatMessage(self.__damageCfg["hit_message"]["recieved"]["format_bounce"], self.__battleID, attackerID)
+                                if self.__damageCfg["hit_message"]["recieved"]["bounce"]["enabled"]:
+                                    MessengerEntry.g_instance.gui.addClientMessage(formatMessage(self.__damageCfg["hit_message"]["recieved"]["bounce"]["format"], self.__battleID, attackerID))
                             else:
-                                message = formatMessage(self.__damageCfg["hit_message"]["recieved"]["format_damage"], self.__battleID, attackerID)
-                            MessengerEntry.g_instance.gui.addClientMessage(message)
-
-                            if self.__damageCfg["debug"]:
-                                LOG_NOTE("Damage recieved: ", message)
+                                MessengerEntry.g_instance.gui.addClientMessage(formatMessage(self.__damageCfg["hit_message"]["recieved"]["format"], self.__battleID, attackerID))
                     else:
-                        if self.__damageCfg["team_announce"]["enabled"] == True:
+                        if self.__damageCfg["team_announce"]["enabled"]:
                             if not BattleReplay.g_replayCtrl.isPlaying and damage > self.__damageCfg["team_announce"]["min_damage"]:
                                 from ChatManager import chatManager
 
