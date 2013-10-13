@@ -392,9 +392,6 @@ class Vehicle(BigWorld.Entity):
                     if commandStart is -1:
                         break
 
-                    if commandEnd is -1:
-                        self.printError("Invalid format string: " + message)
-
                     width = -1
                     command = inMessage[position+commandStart+2:position+commandEnd]
 
@@ -476,8 +473,7 @@ class Vehicle(BigWorld.Entity):
                     elif command == "burst_delay":
                         result = "{0:.2f}".format(attacker["vehicleType"].gun["burst"][1]) + "s"
                     else:
-                        self.printError("Invalid command: " + command)
-                        break
+                        raise Exception("Invalid Command: %s" % (command))
 
                     # Replace Command
                     if width is -1:
