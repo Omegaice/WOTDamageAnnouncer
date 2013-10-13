@@ -361,83 +361,133 @@ class Vehicle(BigWorld.Entity):
                 return price
 
             def formatMessage(inMessage, defenderID, attackerID):
-                message = inMessage
-
                 # Get Information
                 p = BigWorld.player()
                 current = p.arena.vehicles.get(defenderID)
                 attacker = p.arena.vehicles.get(attackerID)
 
-                # Self Messages
-                message = message.replace("{{self_user}}", current["name"])
-                message = message.replace("{{self_tier}}", str(current["vehicleType"].level))
-                message = message.replace("{{self_tank_long}}", unicode(current["vehicleType"].type.userString, 'utf-8'))
-                message = message.replace("{{self_tank_short}}", unicode(current["vehicleType"].type.shortUserString, 'utf-8'))
-                message = message.replace("{{self_cur_health}}", str(self.__tankHealth[defenderID]))
-                message = message.replace("{{self_max_health}}", str(current["vehicleType"].maxHealth))
-
-                # Enemy Messages
-                message = message.replace("{{user}}", attacker["name"])
-                message = message.replace("{{tier}}", str(attacker["vehicleType"].level))
-                message = message.replace("{{tank_long}}", unicode(attacker["vehicleType"].type.userString, 'utf-8'))
-                message = message.replace("{{tank_short}}", unicode(attacker["vehicleType"].type.shortUserString, 'utf-8'))
-                message = message.replace("{{damage}}", str(damage))
-                message = message.replace("{{cur_health}}", str(self.__tankHealth[attackerID]))
-                message = message.replace("{{max_health}}", str(attacker["vehicleType"].maxHealth))
-
-                if message.find("{{reload}}") != -1:
-                    message = message.replace("{{reload}}", "{0:.2f}".format(calculateReload(attacker["vehicleType"])) + "s")
-
+                # Do if statements
                 for shell in attacker["vehicleType"].gun["shots"]:
                     if self.__hitType == shell["shell"]["effectsIndex"]:
-                        shot_average = shell["shell"]["damage"][0]
-                        message = message.replace("{{damage_roll}}", "{0:.2f}".format(((damage - shell["shell"]["damage"][0]) / shell["shell"]["damage"][0]) * 100) + "%")
-
-                        if message.find("{{shell_type}}") != -1:
-                            if shell["shell"]["kind"] == "ARMOR_PIERCING":
-                                message = message.replace("{{shell_type}}", self.__damageCfg["name"]["shell"]["ap"])
-                                if message.find("{{c:shell}}") != -1:
-                                    message = message.replace("{{c:shell}}", self.__damageCfg["color"]["shell"]["ap"])
-                            if shell["shell"]["kind"] == "ARMOR_PIERCING_CR":
-                                message = message.replace("{{shell_type}}", self.__damageCfg["name"]["shell"]["apcr"])
-                                if message.find("{{c:shell}}") != -1:
-                                    message = message.replace("{{c:shell}}", self.__damageCfg["color"]["shell"]["apcr"])
-                            if shell["shell"]["kind"] == "HIGH_EXPLOSIVE":
-                                message = message.replace("{{shell_type}}", self.__damageCfg["name"]["shell"]["he"])
-                                if message.find("{{c:shell}}") != -1:
-                                    message = message.replace("{{c:shell}}", self.__damageCfg["color"]["shell"]["he"])
-                            if shell["shell"]["kind"] == "HOLLOW_CHARGE":
-                                message = message.replace("{{shell_type}}", self.__damageCfg["name"]["shell"]["heat"])
-                                if message.find("{{c:shell}}") != -1:
-                                    message = message.replace("{{c:shell}}", self.__damageCfg["color"]["shell"]["heat"])
-
-                        if message.find("{{if_shell_gold}}") != -1:
-                            start = message.find("{{if_shell_gold}}")
-                            end = message.find("{{endif}}")
+                        if inMessage.find("{{if_shell_gold}}") != -1:
+                            start = inMessage.find("{{if_shell_gold}}")
+                            end = inMessage.find("{{endif}}")
                             if end != -1:
                                 price = getShellPrice(shell["shell"]["id"][0], shell["shell"]["id"][1])
                                 if price[1] == 0:
-                                    message = message[:start] + message[end+9:]
+                                    inMessage = inMessage[:start] + inMessage[end+9:]
                                 else:
-                                    message = message[:start] + message[start+17:end] + message[end+9:]
+                                    inMessage = inMessage[:start] + inMessage[start+17:end] + inMessage[end+9:]
                         break
 
-                # Autoloader
-                if message.find("{{shot_delay}}") != -1:
-                    if attacker["vehicleType"].gun["clip"][0] != 1:
-                        message = message.replace("{{shot_delay}}", "{0:.2f}".format(attacker["vehicleType"].gun["clip"][1]) + "s")
+                # Create starting message
+                message = inMessage
+
+                # Parse Commands
+                position = 0
+                while position < len(inMessage):
+                    commandStart = inMessage[position:].find("{{")
+                    commandEnd = inMessage[position:].find("}}")
+
+                    if commandStart is -1:
+                        break
+
+                    if commandEnd is -1:
+                        self.printError("Invalid format string: " + message)
+
+                    width = -1
+                    command = inMessage[position+commandStart+2:position+commandEnd]
+
+                    if command.find("c:") is -1:
+                        seperator = command.find(":")
+                        if seperator is not -1:
+                            width = int(command[seperator+1:])
+                            command = command[:seperator]
+
+                    result = ""
+                    if command == "self_user":
+                        result = current["name"]
+                    elif command == "self_tier":
+                        result = str(current["vehicleType"].level)
+                    elif command == "self_tank_long":
+                        result = unicode(current["vehicleType"].type.userString, 'utf-8')
+                    elif command == "self_tank_short":
+                        result = unicode(current["vehicleType"].type.shortUserString, 'utf-8')
+                    elif command == "self_cur_health":
+                        result = str(self.__tankHealth[defenderID])
+                    elif command == "self_max_health":
+                        result = str(current["vehicleType"].maxHealth)
+                    elif command == "user":
+                        result = attacker["name"]
+                    elif command == "tier":
+                        result = str(attacker["vehicleType"].level)
+                    elif command == "tank_long":
+                        result = unicode(attacker["vehicleType"].type.userString, 'utf-8')
+                    elif command == "tank_short":
+                        result = unicode(attacker["vehicleType"].type.shortUserString, 'utf-8')
+                    elif command == "damage":
+                        result = str(damage)
+                    elif command == "cur_health":
+                        result = str(self.__tankHealth[attackerID])
+                    elif command == "max_health":
+                        result = str(attacker["vehicleType"].maxHealth)
+                    elif command == "reload":
+                        result = "{0:.2f}".format(calculateReload(attacker["vehicleType"])) + "s"
+                    elif command == "damage_roll":
+                        for shell in attacker["vehicleType"].gun["shots"]:
+                            if self.__hitType == shell["shell"]["effectsIndex"]:
+                                result = "{0:.2f}".format(((damage - shell["shell"]["damage"][0]) / shell["shell"]["damage"][0]) * 100) + "%"
+                                break
+                    elif command == "shell_type":
+                        for shell in attacker["vehicleType"].gun["shots"]:
+                            if self.__hitType == shell["shell"]["effectsIndex"]:
+                                if shell["shell"]["kind"] == "ARMOR_PIERCING":
+                                    result = self.__damageCfg["name"]["shell"]["ap"]
+                                if shell["shell"]["kind"] == "ARMOR_PIERCING_CR":
+                                    result = self.__damageCfg["name"]["shell"]["apcr"]
+                                if shell["shell"]["kind"] == "HIGH_EXPLOSIVE":
+                                    result = self.__damageCfg["name"]["shell"]["he"]
+                                if shell["shell"]["kind"] == "HOLLOW_CHARGE":
+                                    result = self.__damageCfg["name"]["shell"]["heat"]
+                                break
+                    elif command == "c:shell":
+                        for shell in attacker["vehicleType"].gun["shots"]:
+                            if self.__hitType == shell["shell"]["effectsIndex"]:
+                                if shell["shell"]["kind"] == "ARMOR_PIERCING":
+                                    result = self.__damageCfg["color"]["shell"]["ap"]
+                                if shell["shell"]["kind"] == "ARMOR_PIERCING_CR":
+                                    result = self.__damageCfg["color"]["shell"]["apcr"]
+                                if shell["shell"]["kind"] == "HIGH_EXPLOSIVE":
+                                    result = self.__damageCfg["color"]["shell"]["he"]
+                                if shell["shell"]["kind"] == "HOLLOW_CHARGE":
+                                    result = self.__damageCfg["color"]["shell"]["heat"]
+                                break
+                    elif command == "shot_delay":
+                        if attacker["vehicleType"].gun["clip"][0] != 1:
+                            result = "{0:.2f}".format(attacker["vehicleType"].gun["clip"][1]) + "s"
+                        else:
+                            result = "{0:.2f}".format(calculateReload(attacker["vehicleType"])) + "s"
+                    elif command == "clip_size":
+                        result = str(attacker["vehicleType"].gun["clip"][0])
+                    elif command == "clip_delay":
+                        result = "{0:.2f}".format(attacker["vehicleType"].gun["clip"][1]) + "s"
+                    elif command == "burst_size":
+                        result = str(attacker["vehicleType"].gun["burst"][0])
+                    elif command == "burst_delay":
+                        result = "{0:.2f}".format(attacker["vehicleType"].gun["burst"][1]) + "s"
                     else:
-                        message = message.replace("{{shot_delay}}", "{0:.2f}".format(calculateReload(attacker["vehicleType"])) + "s")
+                        self.printError("Invalid command: " + command)
+                        break
 
-                if message.find("{{clip_size}}") != -1:
-                    message = message.replace("{{clip_size}}", str(attacker["vehicleType"].gun["clip"][0]))
-                if message.find("{{clip_delay}}") != -1:
-                    message = message.replace("{{clip_delay}}", "{0:.2f}".format(attacker["vehicleType"].gun["clip"][1]) + "s")
+                    # Replace Command
+                    if width is -1:
+                        message = message.replace("{{"+command+"}}", result)
+                    else:
+                        if len(result) < width:
+                            result = " " * (width - len(result)) + result
+                        message = message.replace("{{"+command+":"+str(width)+"}}", result[:width])
 
-                if message.find("{{burst_size}}") != -1:
-                    message = message.replace("{{burst_size}}", str(attacker["vehicleType"].gun["burst"][0]))
-                if message.find("{{burst_delay}}") != -1:
-                    message = message.replace("{{burst_delay}}", "{0:.2f}".format(attacker["vehicleType"].gun["burst"][1]) + "s")
+                    position += commandEnd+2
 
                 return message
 
@@ -483,9 +533,12 @@ class Vehicle(BigWorld.Entity):
                                 message = formatMessage(self.__damageCfg["team_announce"]["format"], self.__battleID, attackerID)
                                 BigWorld.player().broadcast(chatManager.battleTeamChannelID, message.encode('ascii', 'xmlcharrefreplace'))
         except Exception, err:
-            LOG_NOTE("Damage Announcer Error: ", err)
-            if self.__damageCfg["debug"]:
-                MessengerEntry.g_instance.gui.addClientMessage("<font color=\"#FF0000\">Damage Announcer Error: " + str(err) + "</font>")
+            self.printError(str(err))
+
+    def printError(self, message):
+        LOG_NOTE("Damage Announcer Error: ", message)
+        if self.__damageCfg["debug"]:
+            MessengerEntry.g_instance.gui.addClientMessage("<font color=\"#FF0000\">Damage Announcer Error: " + message + "</font>")
 
     def onPushed(self, x, z):
         try:
