@@ -184,6 +184,9 @@ class Vehicle(BigWorld.Entity):
                     player = BigWorld.player()
                     player.inputHandler.onVehicleShaken(self, compMatrix.translation, firstHitDir, effectsDescr['caliber'], ShakeReason.HIT if hasPiercedHit else ShakeReason.HIT_NO_DAMAGE)
 
+            if not hasPiercedHit:
+                self.damage_announce(attackerID, 0)
+
             if not self.isAlive():
                 return
             if attackerID == BigWorld.player().playerVehicleID:
@@ -451,7 +454,11 @@ class Vehicle(BigWorld.Entity):
                 # Test if we are the attacker
                 if currentVehicleID == attackerID:
                     if self.__damageCfg["hit_message"]["given"]["enabled"] == True:
-                        message = formatMessage(self.__damageCfg["hit_message"]["given"]["format"], attackerID, self.__battleID)
+                        message = ""
+                        if damage == 0:
+                            message = formatMessage(self.__damageCfg["hit_message"]["given"]["format_bounce"], attackerID, self.__battleID)
+                        else:
+                            message = formatMessage(self.__damageCfg["hit_message"]["given"]["format_damage"], attackerID, self.__battleID)
                         MessengerEntry.g_instance.gui.addClientMessage(message)
 
                         if self.__damageCfg["debug"]:
@@ -459,7 +466,11 @@ class Vehicle(BigWorld.Entity):
                 elif self.__battleID == currentVehicleID:
                     if p.team != attacker["team"]:
                         if self.__damageCfg["hit_message"]["recieved"]["enabled"] == True:
-                            message = formatMessage(self.__damageCfg["hit_message"]["recieved"]["format"], self.__battleID, attackerID)
+                            message = ""
+                            if damage == 0:
+                                message = formatMessage(self.__damageCfg["hit_message"]["recieved"]["format_bounce"], self.__battleID, attackerID)
+                            else:
+                                message = formatMessage(self.__damageCfg["hit_message"]["recieved"]["format_damage"], self.__battleID, attackerID)
                             MessengerEntry.g_instance.gui.addClientMessage(message)
 
                             if self.__damageCfg["debug"]:
