@@ -10,6 +10,7 @@ from constants import VEHICLE_HIT_EFFECT
 import helpers
 from items import vehicles
 import VehicleAppearance
+from gui import game_control
 from gui.WindowsManager import g_windowsManager
 import AreaDestructibles
 import DestructiblesCache
@@ -81,7 +82,7 @@ class Vehicle(BigWorld.Entity):
             return ()
 
         prereqs = []
-        descr = vehicles.VehicleDescr(compactDescr=self.publicInfo.compDescr)
+        descr = vehicles.VehicleDescr(compactDescr=_stripVehCompDescrIfRoaming(self.publicInfo.compDescr))
         self.typeDescriptor = descr
         prereqs += descr.prerequisites()
         for hitTester in descr.getHitTesters():
@@ -880,3 +881,9 @@ def _decodeSegment(vehicleDescr, segment):
      segment & 255,
      segStart,
      segEnd)
+
+
+def _stripVehCompDescrIfRoaming(vehCompDescr):
+    if game_control.g_instance.roaming.isInRoaming():
+        vehCompDescr = vehicles.stripCustomizationFromVehicleCompactDescr(vehCompDescr, True, True, False)[0]
+    return vehCompDescr
