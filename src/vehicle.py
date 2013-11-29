@@ -415,6 +415,8 @@ class Vehicle(BigWorld.Entity):
                         result = str(self.__tankHealth[defenderID])
                     elif command == "defender_max_health":
                         result = str(current["vehicleType"].maxHealth)
+                    elif command == "defender_tank_type_name":
+                        result = current["vehicleType"].name.replace(":", "-")
                     elif command == "user":
                         result = attacker["name"]
                     elif command == "tier":
@@ -429,6 +431,8 @@ class Vehicle(BigWorld.Entity):
                         result = str(self.__tankHealth[attackerID])
                     elif command == "max_health":
                         result = str(attacker["vehicleType"].maxHealth)
+                    elif command == "tank_type_name":
+                        result = attacker["vehicleType"].name.replace(":", "-")
                     elif command == "reload":
                         result = "{0:.2f}".format(calculateReload(attacker["vehicleType"])) + "s"
                     elif command == "damage_roll":
