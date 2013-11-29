@@ -403,17 +403,17 @@ class Vehicle(BigWorld.Entity):
                             command = command[:seperator]
 
                     result = ""
-                    if command == "self_user":
+                    if command == "defender_user":
                         result = current["name"]
-                    elif command == "self_tier":
+                    elif command == "defender_tier":
                         result = str(current["vehicleType"].level)
-                    elif command == "self_tank_long":
+                    elif command == "defender_tank_long":
                         result = unicode(current["vehicleType"].type.userString, 'utf-8')
-                    elif command == "self_tank_short":
+                    elif command == "defender_tank_short":
                         result = unicode(current["vehicleType"].type.shortUserString, 'utf-8')
-                    elif command == "self_cur_health":
+                    elif command == "defender_cur_health":
                         result = str(self.__tankHealth[defenderID])
-                    elif command == "self_max_health":
+                    elif command == "defender_max_health":
                         result = str(current["vehicleType"].maxHealth)
                     elif command == "user":
                         result = attacker["name"]
@@ -505,9 +505,9 @@ class Vehicle(BigWorld.Entity):
                     if self.__damageCfg["hit_message"]["given"]["enabled"]:
                         if damage == 0:
                             if self.__damageCfg["hit_message"]["given"]["bounce"]["enabled"]:
-                                MessengerEntry.g_instance.gui.addClientMessage(formatMessage(self.__damageCfg["hit_message"]["given"]["bounce"]["format"], attackerID, self.__battleID))
+                                MessengerEntry.g_instance.gui.addClientMessage(formatMessage(self.__damageCfg["hit_message"]["given"]["bounce"]["format"], self.__battleID, attackerID))
                         else:
-                            MessengerEntry.g_instance.gui.addClientMessage(formatMessage(self.__damageCfg["hit_message"]["given"]["format"], attackerID, self.__battleID))
+                            MessengerEntry.g_instance.gui.addClientMessage(formatMessage(self.__damageCfg["hit_message"]["given"]["format"], self.__battleID, attackerID))
                 elif self.__battleID == currentVehicleID:
                     if p.team != attacker["team"]:
                         if self.__damageCfg["hit_message"]["received"]["enabled"]:

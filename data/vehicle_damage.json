@@ -4,10 +4,10 @@
 		"spectator": false,
 		"given": {
 			"enabled": false,
-			"format": "<font color='#FFFFFF'>~ {{self_user}}({{self_tank_short}} {{self_cur_health}}/{{self_max_health}}) vs {{user}}({{tank_short}} {{cur_health}}/{{max_health}}) ~: {{damage}}</font>",
+			"format": "<font color='#FFFFFF'>~ {{user}}({{tank_short}} {{cur_health}}/{{max_health}}) vs {{defender_user}}({{defender_tank_short}} {{defender_cur_health}}/{{defender_max_health}}) ~: {{damage}}</font>",
 			"bounce":{
 				"enabled": false,
-				"format": "<font color='#FFFFFF'>~ {{self_user}}({{self_tank_short}} {{self_cur_health}}/{{self_max_health}}) vs {{user}}({{tank_short}} {{cur_health}}/{{max_health}}) ~: {{damage}}</font>"
+				"format": "<font color='#FFFFFF'>~ {{user}}({{tank_short}} {{cur_health}}/{{max_health}}) vs {{defender_user}}({{defender_tank_short}} {{defender_cur_health}}/{{defender_max_health}}) ~: {{damage}}</font>"
 			}
 		},
 		"received": {
