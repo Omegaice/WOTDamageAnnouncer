@@ -417,6 +417,10 @@ class Vehicle(BigWorld.Entity):
                         result = str(current["vehicleType"].maxHealth)
                     elif command == "defender_tank_type_name":
                         result = current["vehicleType"].name.replace(":", "-")
+                    elif command == "defender_tank_class":
+                        for tag in current["vehicleType"].type.tags:
+                            if tag == "heavyTank":
+                                pass
                     elif command == "user":
                         result = attacker["name"]
                     elif command == "tier":
@@ -433,6 +437,10 @@ class Vehicle(BigWorld.Entity):
                         result = str(attacker["vehicleType"].maxHealth)
                     elif command == "tank_type_name":
                         result = attacker["vehicleType"].name.replace(":", "-")
+                    elif command == "tank_class":
+                        for tag in attacker["vehicleType"].type.tags:
+                            if tag == "heavyTank":
+                                pass
                     elif command == "reload":
                         result = "{0:.2f}".format(calculateReload(attacker["vehicleType"])) + "s"
                     elif command == "damage_roll":
@@ -496,7 +504,7 @@ class Vehicle(BigWorld.Entity):
 
             if self.__damageCfg is not None:
                 if self.__damageCfg["debug"]:
-                    LOG_NOTE("Hit:", attackerID, attacker, attacker["vehicleType"].__dict__)
+                    LOG_NOTE("Hit:", attackerID, attacker, attacker["vehicleType"].__dict__, attacker["vehicleType"].type.__dict__)
 
                 currentVehicleID = p.playerVehicleID
                 if hasattr(BigWorld.player().inputHandler.ctrl, 'curVehicleID') and self.__damageCfg["hit_message"]["spectator"]:
