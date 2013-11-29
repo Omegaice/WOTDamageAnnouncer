@@ -434,7 +434,9 @@ class Vehicle(BigWorld.Entity):
                     elif command == "damage_roll":
                         for shell in attacker["vehicleType"].gun["shots"]:
                             if self.__hitType == shell["shell"]["effectsIndex"]:
-                                result = "{0:.2f}".format(((damage - shell["shell"]["damage"][0]) / shell["shell"]["damage"][0]) * 100) + "%"
+                                percent = ((damage - shell["shell"]["damage"][0]) / shell["shell"]["damage"][0]) * 100
+                                percent = min(25.0, max(percent, -25.0))
+                                result = "{0:.2f}".format(percent) + "%"
                                 break
                     elif command == "shell_type":
                         for shell in attacker["vehicleType"].gun["shots"]:

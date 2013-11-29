@@ -3,3 +3,4 @@ client
 *.zip
 *.xc
 assembly.py
+.DS_Store
