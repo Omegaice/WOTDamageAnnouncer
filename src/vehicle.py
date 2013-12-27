@@ -157,7 +157,7 @@ class Vehicle(BigWorld.Entity):
                     maxHitEffectCode = hitEffectCode
                     if not hasPiercedHit:
                         hasPiercedHit = maxHitEffectCode >= VEHICLE_HIT_EFFECT.ARMOR_PIERCED
-                    stages, effects, _ = effectsDescr[self.__hitEffectCodeToEffectGroup[hitEffectCode]]
+                    keyPoints, effects, _ = effectsDescr[self.__hitEffectCodeToEffectGroup[hitEffectCode]]
                     hitTester = getattr(descr, compName)['hitTester']
                     hitTestRes = hitTester.localHitTest(startPoint, endPoint)
                     if not hitTestRes:
@@ -176,7 +176,7 @@ class Vehicle(BigWorld.Entity):
                     mat.setTranslate(startPoint + dir * minDist)
                     mat.preMultiply(rot)
                     showFullscreenEffs = self.isPlayer and self.isAlive()
-                    self.appearance.modelsDesc[compName]['boundEffects'].addNew(mat, effects, stages, isPlayer=self.isPlayer, showShockWave=showFullscreenEffs, showFlashBang=showFullscreenEffs)
+                    self.appearance.modelsDesc[compName]['boundEffects'].addNew(mat, effects, keyPoints, isPlayer=self.isPlayer, showShockWave=showFullscreenEffs, showFlashBang=showFullscreenEffs)
                     if firstHitDir is None:
                         compMatrix = Math.Matrix(self.appearance.modelsDesc[compName]['model'].matrix)
                     firstHitDir = compMatrix.applyVector(dir)
@@ -241,8 +241,8 @@ class Vehicle(BigWorld.Entity):
         mat.postMultiply(invWorldMatrix)
         effectsList = self.typeDescriptor.type.effects.get(collisionEffectName, [])
         if effectsList:
-            stages, effects, _ = random.choice(effectsList)
-            hullAppearance['boundEffects'].addNew(mat, effects, stages, entity=self, surfaceNormal=collisionNormal)
+            keyPoints, effects, _ = random.choice(effectsList)
+            hullAppearance['boundEffects'].addNew(mat, effects, keyPoints, entity=self, surfaceNormal=collisionNormal)
 
     def set_damageStickers(self, prev = None):
         if self.isStarted:
@@ -554,7 +554,10 @@ class Vehicle(BigWorld.Entity):
             pass
 
     def showRammingEffect(self, energy, point):
-        pass
+        if energy < 300:
+            self.showCollisionEffect(point, 'rammingCollisionLight')
+        else:
+            self.showCollisionEffect(point, 'rammingCollisionHeavy')
 
     def onStaticCollision(self, energy, point, normal, miscFlags):
         if not self.isStarted:
@@ -678,7 +681,7 @@ class Vehicle(BigWorld.Entity):
         minimap = g_windowsManager.battleWindow.minimap
         minimap.notifyVehicleStart(self.id)
         self.__startWGPhysics()
-        if self.isPlayer:
+        if self is BigWorld.player().getVehicleAttached():
             nationId = self.typeDescriptor.type.id[0]
             SoundGroups.g_instance.soundModes.setCurrentNation(nations.NAMES[nationId])
 
@@ -868,7 +871,6 @@ class Vehicle(BigWorld.Entity):
 
         return False
 
-
 def _decodeSegment(vehicleDescr, segment):
     compIdx = int(segment & 65280) >> 8
     if compIdx == 0:
@@ -898,8 +900,8 @@ def _decodeSegment(vehicleDescr, segment):
      segStart,
      segEnd)
 
-
 def _stripVehCompDescrIfRoaming(vehCompDescr):
     if game_control.g_instance.roaming.isInRoaming():
         vehCompDescr = vehicles.stripCustomizationFromVehicleCompactDescr(vehCompDescr, True, True, False)[0]
     return vehCompDescr
+    
