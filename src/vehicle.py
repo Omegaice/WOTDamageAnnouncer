@@ -450,6 +450,14 @@ class Vehicle(BigWorld.Entity):
                                 percent = min(25.0, max(percent, -25.0))
                                 result = "{0:+.2f}".format(percent) + "%"
                                 break
+                    elif command == "shell_cost":
+                        for shell in attacker["vehicleType"].gun["shots"]:
+                            if self.__hitType == shell["shell"]["effectsIndex"]:
+                                price = getShellPrice(shell["shell"]["id"][0], shell["shell"]["id"][1])
+                                if price[1] == 0:
+                                    result = str(price[0])
+                                else:
+                                    result = str(price[1] * 400) 
                     elif command == "shell_type":
                         for shell in attacker["vehicleType"].gun["shots"]:
                             if self.__hitType == shell["shell"]["effectsIndex"]:
