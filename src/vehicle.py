@@ -541,7 +541,7 @@ class Vehicle(BigWorld.Entity):
                             else:
                                 MessengerEntry.g_instance.gui.addClientMessage(formatMessage(self.__damageCfg["hit_message"]["received"]["format"], self.__battleID, attackerID))
 
-                if self.__battleID == p.playerVehicleID:
+                if self.__battleID == p.playerVehicleID and attackerID != self.__battleID:
                     if p.team == attacker["team"]:
                         if self.__damageCfg["team_announce"]["enabled"]:
                             if not BattleReplay.g_replayCtrl.isPlaying and damage > self.__damageCfg["team_announce"]["min_damage"]:
