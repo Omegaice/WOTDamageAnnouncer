@@ -450,6 +450,10 @@ class Vehicle(BigWorld.Entity):
                                 percent = min(25.0, max(percent, -25.0))
                                 result = "{0:+.2f}".format(percent) + "%"
                                 break
+                    elif command == "shell_penetration":
+                        for shell in attacker["vehicleType"].gun["shots"]:
+                            if self.__hitType == shell["shell"]["effectsIndex"]:
+                                result = str(int((shell["piercingPower"][0]+shell["piercingPower"][0])*0.5))
                     elif command == "shell_cost":
                         for shell in attacker["vehicleType"].gun["shots"]:
                             if self.__hitType == shell["shell"]["effectsIndex"]:
