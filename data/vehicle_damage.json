@@ -22,7 +22,7 @@
 	"team_announce":{
 		"enabled": true,
 		"min_damage": 25,
-		"format": "{{user}} ({{tank_long}}), please watch your fire!"
+		"format": "{{user}} ({{tank_long}}), please watch your fire! You just hit me for {{damage}}HP."
 	},
 	"color":{
 		"shell":{
