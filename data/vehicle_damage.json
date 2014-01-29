@@ -24,6 +24,14 @@
 		"min_damage": 25,
 		"format": "{{user}} ({{tank_long}}) just team attacked me for {{damage}} damage!"
 	},
+	"platoon_announce":{
+		"enabled": true,
+		"format": "{{user}} ({{tank_long}}) hit me for {{damage}}.",
+		"bounce": {
+			"enabeled": true,
+			"format": "Bounced a shot from {{user}} ({{tank_long}})."
+		}
+	},
 	"color":{
 		"shell":{
 			"ap": "#FFBF00",

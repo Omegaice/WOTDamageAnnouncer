@@ -512,7 +512,7 @@ class Vehicle(BigWorld.Entity):
 
                     position += commandEnd+2
 
-                return message
+                return ("%s" % message).encode('utf-8')
 
             if self.__damageCfg is not None:
                 if self.__damageCfg["debug"]:
@@ -540,6 +540,32 @@ class Vehicle(BigWorld.Entity):
                                     MessengerEntry.g_instance.gui.addClientMessage(formatMessage(self.__damageCfg["hit_message"]["received"]["bounce"]["format"], self.__battleID, attackerID))
                             else:
                                 MessengerEntry.g_instance.gui.addClientMessage(formatMessage(self.__damageCfg["hit_message"]["received"]["format"], self.__battleID, attackerID))
+
+                        if self.__damageCfg["platoon_announce"]["enabled"]:
+                            import chat_shared
+                            from ChatManager import chatManager
+                            from constants import ARENA_GUI_TYPE, PREBATTLE_TYPE
+
+                            squad_channel = 999
+                            for channel in MessengerEntry.g_instance.gui.channelsCtrl.channelsStorage.all():
+                                if channel.getProtoData().flags & chat_shared.CHAT_CHANNEL_BATTLE != 0:
+                                    if channel.getProtoData().flags & chat_shared.CHAT_CHANNEL_BATTLE_TEAM != 0:
+                                        if BigWorld.player().arena.guiType == ARENA_GUI_TYPE.COMPANY:
+                                            squad_channel = channel.getProtoData().id
+                                            break
+                                        if BigWorld.player().arena.guiType == ARENA_GUI_TYPE.CYBERSPORT:
+                                            squad_channel = channel.getProtoData().id
+                                            break
+                                elif channel.getProtoData().flags & chat_shared.CHAT_CHANNEL_SQUAD != 0:
+                                    if BigWorld.player().arena.guiType == ARENA_GUI_TYPE.RANDOM:
+                                        squad_channel = channel.getProtoData().id
+                                        break
+
+                            if damage == 0:
+                                if self.__damageCfg["platoon_announce"]["bounce"]["enabled"]:
+                                    BigWorld.player().broadcast(squad_channel, formatMessage(self.__damageCfg["platoon_announce"]["bounce"]["format"], self.__battleID, attackerID))
+                            else:
+                                BigWorld.player().broadcast(squad_channel, formatMessage(self.__damageCfg["platoon_announce"]["format"], self.__battleID, attackerID))
 
                 if self.__battleID == p.playerVehicleID and attackerID != self.__battleID:
                     if p.team == attacker["team"]:
