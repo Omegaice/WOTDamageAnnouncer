@@ -157,28 +157,28 @@ class Vehicle(BigWorld.Entity):
                     maxHitEffectCode = hitEffectCode
                     if not hasPiercedHit:
                         hasPiercedHit = maxHitEffectCode >= VEHICLE_HIT_EFFECT.ARMOR_PIERCED
-                    keyPoints, effects, _ = effectsDescr[self.__hitEffectCodeToEffectGroup[hitEffectCode]]
-                    hitTester = getattr(descr, compName)['hitTester']
-                    hitTestRes = hitTester.localHitTest(startPoint, endPoint)
-                    if not hitTestRes:
-                        continue
-                    minDist = hitTestRes[0]
-                    for hitTestRes in hitTestRes:
-                        dist = hitTestRes[0]
-                        if dist < minDist:
-                            minDist = dist
+                keyPoints, effects, _ = effectsDescr[self.__hitEffectCodeToEffectGroup[hitEffectCode]]
+                hitTester = getattr(descr, compName)['hitTester']
+                hitTestRes = hitTester.localHitTest(startPoint, endPoint)
+                if not hitTestRes:
+                    continue
+                minDist = hitTestRes[0]
+                for hitTestRes in hitTestRes:
+                    dist = hitTestRes[0]
+                    if dist < minDist:
+                        minDist = dist
 
-                    dir = endPoint - startPoint
-                    dir.normalise()
-                    rot = Math.Matrix()
-                    rot.setRotateYPR((dir.yaw, dir.pitch, 0.0))
-                    mat = Math.Matrix()
-                    mat.setTranslate(startPoint + dir * minDist)
-                    mat.preMultiply(rot)
-                    showFullscreenEffs = self.isPlayer and self.isAlive()
-                    self.appearance.modelsDesc[compName]['boundEffects'].addNew(mat, effects, keyPoints, isPlayer=self.isPlayer, showShockWave=showFullscreenEffs, showFlashBang=showFullscreenEffs)
-                    if firstHitDir is None:
-                        compMatrix = Math.Matrix(self.appearance.modelsDesc[compName]['model'].matrix)
+                dir = endPoint - startPoint
+                dir.normalise()
+                rot = Math.Matrix()
+                rot.setRotateYPR((dir.yaw, dir.pitch, 0.0))
+                mat = Math.Matrix()
+                mat.setTranslate(startPoint + dir * minDist)
+                mat.preMultiply(rot)
+                showFullscreenEffs = self.isPlayer and self.isAlive()
+                self.appearance.modelsDesc[compName]['boundEffects'].addNew(mat, effects, keyPoints, isPlayer=self.isPlayer, showShockWave=showFullscreenEffs, showFlashBang=showFullscreenEffs)
+                if firstHitDir is None:
+                    compMatrix = Math.Matrix(self.appearance.modelsDesc[compName]['model'].matrix)
                     firstHitDir = compMatrix.applyVector(dir)
                     self.appearance.receiveShotImpulse(firstHitDir, effectsDescr['targetImpulse'])
                     self.appearance.executeHitVibrations(maxHitEffectCode)
@@ -193,8 +193,9 @@ class Vehicle(BigWorld.Entity):
             if attackerID == BigWorld.player().playerVehicleID:
                 if maxHitEffectCode is not None and not self.isPlayer:
                     marker = getattr(self, 'marker', None)
-                    manager = marker is not None and g_windowsManager.battleWindow.vMarkersManager
-                    manager.updateMarkerState(marker, 'hit_pierced' if hasPiercedHit else 'hit')
+                    if marker is not None:
+                        manager = g_windowsManager.battleWindow.vMarkersManager
+                        manager.updateMarkerState(marker, 'hit_pierced' if hasPiercedHit else 'hit')
 
     __hitEffectCodeToEffectGroup = ('armorRicochet', 'armorResisted', 'armorHit', 'armorHit', 'armorCriticalHit')
 
@@ -707,7 +708,7 @@ class Vehicle(BigWorld.Entity):
         if self.isPlayer:
             BigWorld.wgDelEdgeDetectEntity(self)
         self.__stopExtras()
-        if hasattr(self, 'marker'):
+        if hasattr(self, 'marker'): 
             manager = g_windowsManager.battleWindow.vMarkersManager
             manager.destroyMarker(self.marker)
             self.marker = -1
@@ -754,7 +755,7 @@ class Vehicle(BigWorld.Entity):
     def __isDestructibleBroken(self, chunkID, itemIndex, matKind, itemFilename):
         desc = AreaDestructibles.g_cache.getDescByFilename(itemFilename)
         if desc is None:
-            return False
+            return False    
         ctrl = AreaDestructibles.g_destructiblesManager.getController(chunkID)
         if ctrl is None:
             return False
@@ -916,4 +917,3 @@ def _stripVehCompDescrIfRoaming(vehCompDescr):
     if game_control.g_instance.roaming.isInRoaming():
         vehCompDescr = vehicles.stripCustomizationFromVehicleCompactDescr(vehCompDescr, True, True, False)[0]
     return vehCompDescr
-    
