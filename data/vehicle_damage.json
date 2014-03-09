@@ -1,43 +1,43 @@
 {
-	"debug": false,
-	"hit_message":{
-		"spectator": false,
-		"given": {
-			"enabled": false,
-			"format": "<font color='#FFFFFF'>~ {{user}}({{tank_short}} {{cur_health}}/{{max_health}}) vs {{defender_user}}({{defender_tank_short}} {{defender_cur_health}}/{{defender_max_health}}) ~: {{damage}}</font>",
-			"bounce":{
-				"enabled": false,
-				"format": "<font color='#FFFFFF'>~ {{user}}({{tank_short}} {{cur_health}}/{{max_health}}) vs {{defender_user}}({{defender_tank_short}} {{defender_cur_health}}/{{defender_max_health}}) ~: {{damage}}</font>"
-			}
-		},
-		"received": {
-			"enabled": true,
-			"format": "<font color='#FFFFFF'>~ <font color='#01DF3A'>{{user}}</font>(<font color='#01DFA5'>{{tank_short}}</font>) <font face='Webdings'><b>~</b></font>: <b><font color='#FF8000'>{{damage}}</font></b>(<font color='{{c:shell}}'>{{shell_type}}{{if_shell_gold}}<font face='Webdings'>‘</font>{{endif}}</font>) <font face='Webdings'><b>q</b></font>: <b>{{shot_delay}}</b></font>",
-			"bounce":{
-				"enabled": true,
-				"format": "<font color='#FFFFFF'>~ <font color='#01DF3A'>{{user}}</font>(<font color='#01DFA5'>{{tank_short}}</font>) <font color='{{c:shell}}'>{{shell_type}}{{if_shell_gold}}<font face='Webdings'>‘</font>{{endif}}</font> <font face='Webdings'><b>q</b></font>: <b>{{shot_delay}}</b></font>"
-			}
-		}
-	},
-	"team_announce":{
-		"enabled": true,
-		"min_damage": 25,
-		"format": "{{user}} ({{tank_long}}), please watch your fire! You just hit me for {{damage}}HP."
-	},
-	"color":{
-		"shell":{
-			"ap": "#FFBF00",
-			"apcr": "#FFBF00",
-			"he": "#FFBF00",
-			"heat": "#FFBF00"
-		}
-	},
-	"name": {
-		"shell":{
-			"ap": "AP",
-			"apcr": "APCR",
-			"he": "HE",
-			"heat": "HEAT"
-		}
-	}
+    "debug": false,
+    "hit_message": {
+        "spectator": false,
+        "given": {
+            "enabled": false,
+            "format": "<font color='#FFFFFF'>~ {{user}}({{tank_short}} {{cur_health}}/{{max_health}}) vs {{defender_user}}({{defender_tank_short}} {{defender_cur_health}}/{{defender_max_health}}) ~: {{damage}}</font>",
+            "bounce": {
+                "enabled": false,
+                "format": "<font color='#FFFFFF'>~ {{user}}({{tank_short}} {{cur_health}}/{{max_health}}) vs {{defender_user}}({{defender_tank_short}} {{defender_cur_health}}/{{defender_max_health}}) ~: {{damage}}</font>"
+            }
+        },
+        "received": {
+            "enabled": true,
+            "format": "<font color='#FFFFFF'>~ <font color='#01DF3A'>{{user}}</font>(<font color='#01DFA5'>{{tank_short}}</font>) <font face='Webdings'><b>~</b></font>: <b><font color='#FF8000'>{{damage}}</font></b>(<font color='{{c:shell}}'>{{shell_type}}{{if_shell_gold}}<font face='Webdings'>‘</font>{{endif}}</font>) <font face='Webdings'><b>q</b></font>: <b>{{shot_delay}}</b></font>",
+            "bounce": {
+                "enabled": true,
+                "format": "<font color='#FFFFFF'>~ <font color='#01DF3A'>{{user}}</font>(<font color='#01DFA5'>{{tank_short}}</font>) <font color='{{c:shell}}'>{{shell_type}}{{if_shell_gold}}<font face='Webdings'>‘</font>{{endif}}</font> <font face='Webdings'><b>q</b></font>: <b>{{shot_delay}}</b></font>"
+            }
+        }
+    },
+    "team_announce": {
+        "enabled": true,
+        "min_damage": 25,
+        "format": "{{user}} ({{tank_long}}), please watch your fire! You just hit me for {{damage}}HP."
+    },
+    "color": {
+        "shell": {
+            "ap": "#FFBF00",
+            "apcr": "#FFBF00",
+            "he": "#FFBF00",
+            "heat": "#FFBF00"
+        }
+    },
+    "name": {
+        "shell": {
+            "ap": "AP",
+            "apcr": "APCR",
+            "he": "HE",
+            "heat": "HEAT"
+        }
+    }
 }

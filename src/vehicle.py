@@ -549,7 +549,7 @@ class Vehicle(BigWorld.Entity):
                                 from ChatManager import chatManager
 
                                 message = formatMessage(self.__damageCfg["team_announce"]["format"], self.__battleID, attackerID)
-                                BigWorld.player().broadcast(chatManager.battleTeamChannelID, message.encode('ascii', 'xmlcharrefreplace'))
+                                BigWorld.player().broadcast(chatManager.battleTeamChannelID, message.encode('utf8', 'xmlcharrefreplace'))
         except Exception, err:
             self.printError(str(err))
 
