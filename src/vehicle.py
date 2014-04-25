@@ -53,6 +53,7 @@ class Vehicle(BigWorld.Entity):
         LOG_NOTE("Error: ", err)
 
     __tankHealth = {}
+    __spotted = {}
 
     def __init__(self):
         self.proxy = weakref.proxy(self)
@@ -122,10 +123,13 @@ class Vehicle(BigWorld.Entity):
                 break
         if self.__battleID not in self.__tankHealth:
             self.__tankHealth[self.__battleID] = self.typeDescriptor.maxHealth
+        self.__spotted[self.__battleID] = True
 
         self.__isEnteringWorld = False
 
     def onLeaveWorld(self):
+        self.__spotted[self.__battleID] = False
+
         self.__stopExtras()
         BigWorld.player().vehicle_onLeaveWorld(self)
         assert not self.isStarted
@@ -517,7 +521,7 @@ class Vehicle(BigWorld.Entity):
                         else:
                             MessengerEntry.g_instance.gui.addClientMessage(formatMessage(self.__damageCfg["hit_message"]["given"]["format"], self.__battleID, attackerID))
                 elif self.__battleID == currentVehicleID:
-                    if p.team != attacker["team"]:
+                    if p.team != attacker["team"] and attackerID in self.__spotted and self.__spotted[attackerID] == True:
                         if self.__damageCfg["hit_message"]["received"]["enabled"]:
                             if damage == 0:
                                 if self.__damageCfg["hit_message"]["received"]["bounce"]["enabled"]:
