@@ -317,19 +317,12 @@ class Vehicle(BigWorld.Entity):
                 return False
 
             def calculateReload(vehicle):
-                loader_skill = 126.5
-                if isOptionalEquipped(attacker["vehicleType"], "improvedVentilation"):
-                    loader_skill = 132.0
+                # Assume ventilation
+                loader_skill = 132.0
 
-                other_bonus = 1.0
-                # Take into account adrenaline skill
-                if self.__tankHealth[attackerID] < attacker["vehicleType"].maxHealth * 0.1:
-                    other_bonus *= 0.909
-
-                # Take into account rammer
-                if isOptionalEquipped(attacker["vehicleType"], "TankRammer"):
-                    other_bonus *= 0.9
-
+                # Assume rammer
+                other_bonus = 0.9
+                
                 return ((attacker["vehicleType"].gun["reloadTime"] * 0.875) / (0.00375 * loader_skill + 0.5)) * other_bonus
 
             def getShellPrice(nationID, shellID):
