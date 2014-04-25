@@ -133,17 +133,16 @@ class Vehicle(BigWorld.Entity):
     def showShooting(self, burstCount, isPredictedShot = False):
         if not self.isStarted:
             return
-        else:
-            if not isPredictedShot and self.isPlayer and not BigWorld.player().isWaitingForShot:
-                if not BattleReplay.g_replayCtrl.isPlaying:
-                    return
-            extra = self.typeDescriptor.extrasDict['shoot']
-            data = self.extras.get(extra.index)
-            if data is not None:
-                extra.stop(data)
-            extra.startFor(self, burstCount)
-            if not isPredictedShot and self.isPlayer:
-                BigWorld.player().cancelWaitingForShot()
+        if not isPredictedShot and self.isPlayer and not BigWorld.player().isWaitingForShot:
+            if not BattleReplay.g_replayCtrl.isPlaying:
+                return
+        extra = self.typeDescriptor.extrasDict['shoot']
+        data = self.extras.get(extra.index)
+        if data is not None:
+            extra.stop(data)
+        extra.startFor(self, burstCount)
+        if not isPredictedShot and self.isPlayer:
+            BigWorld.player().cancelWaitingForShot()
 
     def showDamageFromShot(self, attackerID, points, effectsIndex):
         if not self.isStarted:
@@ -173,6 +172,7 @@ class Vehicle(BigWorld.Entity):
 
         if not self.isAlive():
             return
+
         if attackerID == BigWorld.player().playerVehicleID and maxHitEffectCode is not None and not self.isPlayer:
             marker = getattr(self, 'marker', None)
             if marker is not None:
@@ -184,7 +184,6 @@ class Vehicle(BigWorld.Entity):
             return
 
         self.__hitType = effectsIndex
-
         impulse = vehicles.g_cache.shotEffects[effectsIndex]['targetImpulse']
         dir = self.position - center
         dir.normalise()
@@ -542,7 +541,6 @@ class Vehicle(BigWorld.Entity):
         if self.__damageCfg["debug"]:
             MessengerEntry.g_instance.gui.addClientMessage("<font color=\"#FF0000\">Damage Announcer Error: " + message + "</font>")
 
-
     def showAmmoBayExplosion(self, fireballVolume, projectedTurretSpeed):
         volumes = vehicles.g_cache.commonConfig['miscParams']['explosionCandleVolumes']
         effectKind = 0
@@ -618,7 +616,6 @@ class Vehicle(BigWorld.Entity):
     def collideSegment(self, startPoint, endPoint, skipGun = False):
         if not segmentMayHitVehicle(self.typeDescriptor, startPoint, endPoint, self.position):
             return
-
         worldToVehMatrix = Math.Matrix(self.model.matrix)
         worldToVehMatrix.invert()
         startPoint = worldToVehMatrix.applyPoint(startPoint)
@@ -648,7 +645,6 @@ class Vehicle(BigWorld.Entity):
         assert not self.isStarted
 
         avatar = BigWorld.player()
-
         self.appearance.start(self, self.__prereqs)
         self.__prereqs = None
         self.appearance.changeEngineMode(self.engineMode)
@@ -671,8 +667,9 @@ class Vehicle(BigWorld.Entity):
         minimap = g_windowsManager.battleWindow.minimap
         minimap.notifyVehicleStart(self.id)
         self.__startWGPhysics()
-        nationId = self is BigWorld.player().getVehicleAttached() and self.typeDescriptor.type.id[0]
-        SoundGroups.g_instance.soundModes.setCurrentNation(nations.NAMES[nationId])
+        if self is BigWorld.player().getVehicleAttached():
+             nationId = self.typeDescriptor.type.id[0]
+             SoundGroups.g_instance.soundModes.setCurrentNation(nations.NAMES[nationId])
 
         if avatar.name == self.publicInfo.name:
             if self.__damageCfg is None and self.__hasWarned == False:
