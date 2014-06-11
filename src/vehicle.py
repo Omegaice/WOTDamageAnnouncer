@@ -204,10 +204,16 @@ class Vehicle(BigWorld.Entity):
     def showVehicleCollisionEffect(self, pos, delta_spd):
         if not self.isStarted:
             return
-        if delta_spd < 5:
+        if delta_spd < 3:
             self.showCollisionEffect(pos, 'collisionVehicleLight')
         else:
-            self.showCollisionEffect(pos, 'collisionVehicleHeavy')
+            mass = self.typeDescriptor.physics['weight']
+            if mass < 18000:
+                self.showCollisionEffect(pos, 'collisionVehicleHeavy1')
+            elif mass < 46000:
+                self.showCollisionEffect(pos, 'collisionVehicleHeavy2')
+            else:
+                self.showCollisionEffect(pos, 'collisionVehicleHeavy3')
         self.appearance.executeRammingVibrations()
 
     def showCollisionEffect(self, hitPos, collisionEffectName = 'collisionVehicle', collisionNormal = None):
@@ -643,7 +649,6 @@ class Vehicle(BigWorld.Entity):
 
     def startVisual(self):
         assert not self.isStarted
-
         avatar = BigWorld.player()
         self.appearance.start(self, self.__prereqs)
         self.__prereqs = None
@@ -811,7 +816,7 @@ class Vehicle(BigWorld.Entity):
             self.__hornMode = hornDesc['mode']
             model = self.appearance.modelsDesc['turret']['model']
             for sndEventId in hornDesc['sounds']:
-                snd = model.getSound(sndEventId)
+                snd = SoundGroups.g_instance.getSound(model, sndEventId)
                 snd.volume *= self.typeDescriptor.type.hornVolumeFactor
                 self.__hornSounds.append(snd)
 
@@ -851,7 +856,7 @@ class Vehicle(BigWorld.Entity):
     def confirmTurretDetachment(self):
         self.__turretDetachmentConfirmed = True
         if not self.isTurretDetached:
-            raise Exception('Someone has confirmed turret detachment, though the turret is not detached')
+            LOG_ERROR('Vehicle::confirmTurretDetachment: Confirming turret detachment, though the turret is not detached')
         self.appearance.updateTurretVisibility()
 
 def _stripVehCompDescrIfRoaming(vehCompDescr):
