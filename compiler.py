@@ -7,11 +7,11 @@ ZIPName = "ReceivedDamage-EU.zip"
 if os.path.exists( ZIPName ):
 	os.remove( ZIPName )
 
-p = subprocess.Popen(shlex.split("pyobfuscate -r src/vehicle.py"), stdout=subprocess.PIPE)
+p = subprocess.Popen(shlex.split("pyobfuscate -a src/vehicle.py"), stdout=subprocess.PIPE)
 (output, err) = p.communicate()
 
 with open("src/vehicle_obs.py", "w") as text_file:
-    text_file.write(output)
+	text_file.write(output)
 
 py_compile.compile("src/vehicle_obs.py")
 
