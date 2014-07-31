@@ -544,15 +544,8 @@ class Vehicle(BigWorld.Entity):
         if self.__damageCfg["debug"]:
             MessengerEntry.g_instance.gui.addClientMessage("<font color=\"#FF0000\">Damage Announcer Error: " + message + "</font>")
 
-    def showAmmoBayExplosion(self, fireballVolume, projectedTurretSpeed):
-        volumes = vehicles.g_cache.commonConfig['miscParams']['explosionCandleVolumes']
-        effectKind = 0
-        for volume in reversed(volumes):
-            if fireballVolume > volume:
-                effectKind = volumes.index(volume) + 1
-                break
-
-        self.appearance.onShowAmmoBayExplosion(effectKind)
+    def showAmmoBayEffect(self, mode, fireballVolume, projectedTurretSpeed):
+        self.appearance.showAmmoBayEffect(mode, fireballVolume)
 
     def onPushed(self, x, z):
         try:
@@ -616,8 +609,12 @@ class Vehicle(BigWorld.Entity):
         res.append((vehicleDescr.gun, gunMatrix, not self.isTurretDetached))
         return res
 
+    def segmentMayHitVehicle(self, startPoint, endPoint):
+        return segmentMayHitVehicle(self.typeDescriptor, startPoint, endPoint, self.position)
+
     def collideSegment(self, startPoint, endPoint, skipGun = False):
-        if not segmentMayHitVehicle(self.typeDescriptor, startPoint, endPoint, self.position):
+        filterMethod = getattr(self.filter, 'segmentMayHitEntity', self.segmentMayHitVehicle)
+        if not filterMethod(startPoint, endPoint):
             return
         worldToVehMatrix = Math.Matrix(self.model.matrix)
         worldToVehMatrix.invert()
@@ -652,9 +649,9 @@ class Vehicle(BigWorld.Entity):
         self.appearance.changeEngineMode(self.engineMode)
         self.appearance.onVehicleHealthChanged()
         if self.isPlayer:
-            BigWorld.wgAddEdgeDetectEntity(self, 0, True)
-            self.appearance.turretMatrix.target = avatar.gunRotator.turretMatrix
-            self.appearance.gunMatrix.target = avatar.gunRotator.gunMatrix
+            if self.isAlive():
+                BigWorld.wgAddEdgeDetectEntity(self, 0, True)
+                self.appearance.setupGunMatrixTargets(avatar.gunRotator)
             self.filter.allowStrafeCompensation = False
         else:
             self.marker = g_windowsManager.battleWindow.vMarkersManager.createMarker(self.proxy)
@@ -800,6 +797,7 @@ class Vehicle(BigWorld.Entity):
                 manager.updateMarkerState(marker, 'dead', isDeadStarted)
         self.stopHornSound(True)
         TriggersManager.g_manager.fireTrigger(TRIGGER_TYPE.VEHICLE_DESTROYED, vehicleId=self.id)
+        self.filter.velocityErrorCompensation = 100.0
 
     def playHornSound(self, hornID):
         if not self.isStarted:
