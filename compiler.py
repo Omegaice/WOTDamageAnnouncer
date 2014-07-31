@@ -2,7 +2,7 @@ import py_compile, zipfile, os, subprocess
 import shlex
 
 WOTVersion = "0.9.1"
-ZIPName = "ReceivedDamage-NA.zip"
+ZIPName = "ReceivedDamage-EU.zip"
 
 if os.path.exists( ZIPName ):
 	os.remove( ZIPName )
