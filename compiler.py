@@ -1,7 +1,7 @@
 import py_compile, zipfile, os, subprocess
 import shlex
 
-WOTVersion = "0.9.3"
+WOTVersion = "0.9.4"
 ZIPName = "ReceivedDamage-EU.zip"
 
 if os.path.exists( ZIPName ):
